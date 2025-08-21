@@ -73,6 +73,7 @@
     <div id="toast" class="fixed bottom-5 right-5 bg-gray-800 text-white py-2 px-4 rounded-lg shadow-lg transition-opacity duration-300 opacity-0"><p id="toast-message"></p></div>
 
     <script type="module">
+        console.log("DEBUG: Admin script started.");
         import { db, auth, projectsCollectionRef } from './firebase-config.js';
         import { onAuthStateChanged, signInAnonymously, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { onSnapshot, addDoc, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
@@ -88,6 +89,7 @@
         const projectUrlInput = document.getElementById('project-url');
         const toast = document.getElementById('toast');
         const toastMessage = document.getElementById('toast-message');
+        const authStatus = document.getElementById('auth-status');
 
         // --- Helper Functions ---
         function showToast(message, isError = false) {
@@ -132,23 +134,32 @@
         projectCategorySelect.addEventListener('change', updateUrlField);
         logoutButton.addEventListener('click', () => signOut(auth));
 
+        console.log("DEBUG: Setting up onAuthStateChanged listener...");
         onAuthStateChanged(auth, user => {
+            console.log("DEBUG: onAuthStateChanged triggered. User object:", user);
             if (user) {
+                console.log("DEBUG: User is authenticated. UID:", user.uid);
                 authContainer.style.display = 'none';
                 adminPanel.classList.remove('hidden');
             } else {
+                console.log("DEBUG: User is not authenticated. Attempting to sign in anonymously...");
                 adminPanel.classList.add('hidden');
                 authContainer.style.display = 'block';
                 signInAnonymously(auth).catch(error => {
-                    console.error("Lỗi đăng nhập:", error);
-                    document.getElementById('auth-status').textContent = `Lỗi xác thực.`;
+                    console.error("DEBUG: Anonymous sign-in failed:", error);
+                    authStatus.textContent = `Lỗi xác thực: ${error.code}`;
+                    authStatus.classList.add('text-red-500');
                 });
             }
         });
 
+        console.log("DEBUG: Setting up onSnapshot listener for projects...");
         onSnapshot(projectsCollectionRef, (snapshot) => {
+            console.log("DEBUG: Firestore snapshot received. Documents count:", snapshot.size);
             const projects = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             renderAdminList(projects);
+        }, (error) => {
+            console.error("DEBUG: Firestore onSnapshot error:", error);
         });
 
         addProjectForm.addEventListener('submit', async (e) => {
@@ -183,6 +194,7 @@
 
         // Initial call to set the correct label
         updateUrlField();
+        console.log("DEBUG: Admin script finished setup.");
     </script>
 </body>
 </html>
