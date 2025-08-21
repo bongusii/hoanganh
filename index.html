@@ -267,25 +267,48 @@
                 portfolioGrid.innerHTML = `<p class="col-span-full text-center text-gray-400">Chưa có dự án nào được thêm.</p>`;
                 return;
             }
+            
             const categoryMap = { ui: 'Lập trình UI', design: 'Thiết kế', photo: 'Nhiếp ảnh', video: 'Video' };
             projects.forEach(project => {
                 const item = document.createElement('div');
                 item.className = 'portfolio-item group relative overflow-hidden rounded-lg shadow-lg';
                 item.dataset.category = project.category;
-                let imageUrl, playIconOverlay = '';
+
+                let imageUrl;
+                let playIconOverlay = '';
+
                 if (project.thumbnailUrl && project.thumbnailUrl.trim() !== '') {
                     imageUrl = project.thumbnailUrl;
                 } else if (project.category === 'video') {
                     const videoId = getYoutubeVideoId(project.url);
-                    imageUrl = videoId ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg` : project.url;
+                    if (videoId) {
+                        imageUrl = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+                    } else {
+                        imageUrl = project.url;
+                    }
                 } else {
                     imageUrl = project.url;
                 }
+
                 if (project.category === 'video') {
                     item.dataset.videoUrl = project.url;
-                    playIconOverlay = `<div class="absolute inset-0 bg-black bg-opacity-20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"><svg class="w-16 h-16 text-white opacity-80" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div>`;
+                    playIconOverlay = `
+                        <div class="absolute inset-0 bg-black bg-opacity-20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <svg class="w-16 h-16 text-white opacity-80" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                        </div>
+                    `;
                 }
-                item.innerHTML = `<img src="${imageUrl}" alt="${project.title}" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1f2937/34d399?text=Image+Error';"><div class="absolute inset-0 bg-black bg-opacity-60 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center p-4"><div class="text-center"><h3 class="text-xl font-bold text-white">${project.title}</h3><p class="text-sm text-gray-300 mt-1">${categoryMap[project.category] || 'Chung'}</p></div></div>${playIconOverlay}`;
+
+                item.innerHTML = `
+                    <img src="${imageUrl}" alt="${project.title}" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1f2937/34d399?text=Image+Error';">
+                    <div class="absolute inset-0 bg-black bg-opacity-60 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center p-4">
+                        <div class="text-center">
+                            <h3 class="text-xl font-bold text-white">${project.title}</h3>
+                            <p class="text-sm text-gray-300 mt-1">${categoryMap[project.category] || 'Chung'}</p>
+                        </div>
+                    </div>
+                    ${playIconOverlay}
+                `;
                 portfolioGrid.appendChild(item);
             });
         }
