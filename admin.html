@@ -52,8 +52,8 @@
                             </select>
                         </div>
                         <div class="mb-6">
-                            <label for="project-image-url" class="block text-gray-300 text-sm font-bold mb-2">URL Hình ảnh</label>
-                            <input type="url" id="project-image-url" placeholder="https://example.com/image.jpg" class="w-full bg-gray-700 border border-gray-600 rounded-lg py-2 px-3 text-white focus:outline-none focus:border-teal-500" required>
+                            <label for="project-url" id="url-label" class="block text-gray-300 text-sm font-bold mb-2">URL Hình ảnh</label>
+                            <input type="url" id="project-url" placeholder="https://example.com/image.jpg" class="w-full bg-gray-700 border border-gray-600 rounded-lg py-2 px-3 text-white focus:outline-none focus:border-teal-500" required>
                         </div>
                         <button type="submit" class="w-full bg-teal-500 hover:bg-teal-600 text-white font-bold py-3 px-4 rounded-lg transition duration-300">Thêm dự án</button>
                     </form>
@@ -70,10 +70,7 @@
         </div>
     </div>
     
-    <!-- Toast Notification -->
-    <div id="toast" class="fixed bottom-5 right-5 bg-gray-800 text-white py-2 px-4 rounded-lg shadow-lg transition-opacity duration-300 opacity-0">
-        <p id="toast-message"></p>
-    </div>
+    <div id="toast" class="fixed bottom-5 right-5 bg-gray-800 text-white py-2 px-4 rounded-lg shadow-lg transition-opacity duration-300 opacity-0"><p id="toast-message"></p></div>
 
     <script type="module">
         import { db, auth, projectsCollectionRef } from './firebase-config.js';
@@ -86,17 +83,61 @@
         const logoutButton = document.getElementById('logout-button');
         const addProjectForm = document.getElementById('add-project-form');
         const adminProjectList = document.getElementById('admin-project-list');
+        const projectCategorySelect = document.getElementById('project-category');
+        const urlLabel = document.getElementById('url-label');
+        const projectUrlInput = document.getElementById('project-url');
         const toast = document.getElementById('toast');
         const toastMessage = document.getElementById('toast-message');
 
+        function showToast(message, isError = false) { /* ... */ }
+
+        // NEW: Update URL field based on category
+        function updateUrlField() {
+            const selectedCategory = projectCategorySelect.value;
+            if (selectedCategory === 'video') {
+                urlLabel.textContent = 'URL Video YouTube';
+                projectUrlInput.placeholder = 'https://www.youtube.com/watch?v=...';
+            } else {
+                urlLabel.textContent = 'URL Hình ảnh';
+                projectUrlInput.placeholder = 'https://example.com/image.jpg';
+            }
+        }
+        projectCategorySelect.addEventListener('change', updateUrlField);
+        updateUrlField(); // Call on initial load
+
+        // Authentication Logic
+        onAuthStateChanged(auth, user => { /* ... */ });
+        logoutButton.addEventListener('click', () => signOut(auth));
+
+        // Firestore Logic
+        function renderAdminList(projects) { /* ... */ }
+        onSnapshot(projectsCollectionRef, (snapshot) => { /* ... */ });
+
+        addProjectForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const title = document.getElementById('project-title').value;
+            const category = projectCategorySelect.value;
+            const url = projectUrlInput.value; // Changed from imageUrl to url
+            try {
+                // The field in Firestore is now just 'url'
+                await addDoc(projectsCollectionRef, { title, category, url });
+                showToast('Thêm dự án thành công!');
+                addProjectForm.reset();
+            } catch (error) {
+                console.error("Lỗi thêm dự án: ", error);
+                showToast('Có lỗi xảy ra, không thể thêm dự án.', true);
+            }
+        });
+        
+        adminProjectList.addEventListener('click', async (e) => { /* ... */ });
+
+        // Helper functions (copy from previous versions)
         function showToast(message, isError = false) {
             toastMessage.textContent = message;
             toast.classList.remove('opacity-0');
             toast.style.backgroundColor = isError ? '#DC2626' : '#10B981';
             setTimeout(() => { toast.classList.add('opacity-0'); }, 3000);
         }
-
-        // Authentication Logic
         onAuthStateChanged(auth, user => {
             if (user) {
                 authContainer.style.display = 'none';
@@ -104,17 +145,12 @@
             } else {
                 adminPanel.classList.add('hidden');
                 authContainer.style.display = 'block';
-                // Automatically sign in if not logged in
                 signInAnonymously(auth).catch(error => {
                     console.error("Lỗi đăng nhập:", error);
                     document.getElementById('auth-status').textContent = `Lỗi xác thực.`;
                 });
             }
         });
-
-        logoutButton.addEventListener('click', () => signOut(auth));
-
-        // Firestore Logic
         function renderAdminList(projects) {
              adminProjectList.innerHTML = '';
              if (projects.length === 0) {
@@ -134,27 +170,10 @@
                  adminProjectList.appendChild(item);
              });
         }
-
         onSnapshot(projectsCollectionRef, (snapshot) => {
             const projects = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             renderAdminList(projects);
         });
-
-        addProjectForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const title = document.getElementById('project-title').value;
-            const category = document.getElementById('project-category').value;
-            const imageUrl = document.getElementById('project-image-url').value;
-            try {
-                await addDoc(projectsCollectionRef, { title, category, imageUrl });
-                showToast('Thêm dự án thành công!');
-                addProjectForm.reset();
-            } catch (error) {
-                console.error("Lỗi thêm dự án: ", error);
-                showToast('Có lỗi xảy ra, không thể thêm dự án.', true);
-            }
-        });
-        
         adminProjectList.addEventListener('click', async (e) => {
             if (e.target.classList.contains('delete-btn')) {
                 const id = e.target.dataset.id;
