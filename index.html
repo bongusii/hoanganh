@@ -27,17 +27,64 @@
 </head>
 <body class="bg-gray-900 text-gray-200 antialiased">
 
-    <!-- ... (Toàn bộ nội dung từ <nav> đến <footer> giữ nguyên như cũ) ... -->
+    <!-- Navigation -->
     <nav id="navbar" class="bg-gray-900/80 backdrop-blur-sm fixed w-full top-0 z-50 transition-all duration-300">
-        <!-- ... -->
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <a href="#" class="text-2xl font-bold text-white tracking-wider">[Tên]</a>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="#hero" class="nav-link text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Trang chủ</a>
+                        <a href="#about" class="nav-link text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Giới thiệu</a>
+                        <a href="#work" class="nav-link text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Dự án</a>
+                        <a href="#contact" class="nav-link text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Liên hệ</a>
+                    </div>
+                </div>
+                <div class="-mr-2 flex md:hidden">
+                    <button id="mobile-menu-button" type="button" class="bg-gray-800 inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
+                        <span class="sr-only">Mở menu</span>
+                        <svg class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
+                        <svg class="hidden h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div id="mobile-menu" class="md:hidden hidden"><div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+            <a href="#hero" class="nav-link text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Trang chủ</a>
+            <a href="#about" class="nav-link text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Giới thiệu</a>
+            <a href="#work" class="nav-link text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Dự án</a>
+            <a href="#contact" class="nav-link text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Liên hệ</a>
+        </div></div>
     </nav>
+    
+    <!-- Hero Section -->
     <header id="hero" class="min-h-screen flex items-center bg-gray-900">
-        <!-- ... -->
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h1 class="text-4xl md:text-6xl font-extrabold text-white leading-tight mb-4">Chào bạn, tôi là <span class="text-teal-400">[Tên của bạn]</span></h1>
+            <p class="text-lg md:text-2xl text-gray-300 max-w-3xl mx-auto">Lập trình viên UI, Nhà thiết kế, Nhiếp ảnh gia & Nhà làm phim.<br>Tôi kiến tạo những trải nghiệm số và ghi lại những khoảnh khắc đẹp.</p>
+            <div class="mt-8"><a href="#work" class="nav-link bg-teal-500 text-white font-bold py-3 px-8 rounded-full hover:bg-teal-600 transition duration-300 text-lg">Xem dự án của tôi</a></div>
+        </div>
     </header>
+
     <main>
+        <!-- About Section -->
         <section id="about" class="py-20 sm:py-32">
-            <!-- ... -->
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="lg:grid lg:grid-cols-3 lg:gap-8 items-center">
+                    <div class="lg:col-span-1"><img class="rounded-lg shadow-2xl object-cover h-96 w-full lg:h-auto" src="https://placehold.co/600x800/111827/7f9cf5?text=Ảnh+của+bạn" alt="Ảnh chân dung của bạn" onerror="this.onerror=null;this.src='https://placehold.co/600x800/111827/7f9cf5?text=Image+Not+Found';"></div>
+                    <div class="mt-12 lg:mt-0 lg:col-span-2">
+                        <h2 class="text-3xl font-bold text-white sm:text-4xl mb-6">Về tôi</h2>
+                        <p class="text-lg text-gray-300 mb-4">Xin chào! Tôi là một người đam mê sáng tạo với nền tảng vững chắc về công nghệ và nghệ thuật. Với kinh nghiệm trong lĩnh vực lập trình giao diện người dùng (UI), tôi tập trung vào việc xây dựng các trang web và ứng dụng không chỉ mạnh mẽ về mặt chức năng mà còn tinh tế về mặt thẩm mỹ.</p>
+                        <p class="text-lg text-gray-300 mb-4">Bên cạnh đó, nhiếp ảnh và quay phim là nơi tôi kể những câu chuyện bằng hình ảnh. Tôi yêu thích việc bắt trọn những cảm xúc chân thật và biến những ý tưởng thành những thước phim sống động. Sự kết hợp giữa tư duy logic của lập trình viên và con mắt nghệ thuật của người làm hình ảnh cho phép tôi tạo ra những sản phẩm độc đáo và toàn diện.</p>
+                        <div class="mt-6"><a href="#" class="text-teal-400 font-semibold hover:text-teal-300">Tải CV của tôi <span aria-hidden="true">&rarr;</span></a></div>
+                    </div>
+                </div>
+            </div>
         </section>
+
+        <!-- Work/Portfolio Section -->
         <section id="work" class="py-20 sm:py-32 bg-gray-800/30">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center"><h2 class="text-3xl font-bold text-white sm:text-4xl">Dự án nổi bật</h2><p class="mt-4 text-lg text-gray-400">Một vài sản phẩm tôi đã thực hiện.</p></div>
@@ -50,18 +97,34 @@
                 </div>
                 <div id="portfolio-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     <div id="loading-spinner" class="col-span-full flex justify-center items-center p-16">
-                        <svg class="animate-spin -ml-1 mr-3 h-10 w-10 text-white" xmlns="http://www.w.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                        <svg class="animate-spin -ml-1 mr-3 h-10 w-10 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
                         <span class="text-xl">Đang tải dự án...</span>
                     </div>
                 </div>
             </div>
         </section>
+
+        <!-- Contact Section -->
         <section id="contact" class="py-20 sm:py-32">
-            <!-- ... -->
+            <div class="max-w-3xl mx-auto text-center px-4 sm:px-6 lg:px-8">
+                <h2 class="text-3xl font-bold text-white sm:text-4xl">Cùng hợp tác nhé!</h2>
+                <p class="mt-4 text-lg text-gray-400">Tôi luôn sẵn sàng lắng nghe những ý tưởng mới và tham gia vào các dự án thú vị. Hãy liên hệ với tôi qua email hoặc các mạng xã hội bên dưới.</p>
+                <div class="mt-8"><a href="mailto:emailcuaban@example.com" class="bg-teal-500 text-white font-bold py-3 px-8 rounded-full hover:bg-teal-600 transition duration-300 text-lg">Gửi Email</a></div>
+                <div class="mt-10 flex justify-center space-x-6">
+                    <a href="#" class="text-gray-400 hover:text-white"><span class="sr-only">GitHub</span><i data-lucide="github" class="w-6 h-6"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-white"><span class="sr-only">LinkedIn</span><i data-lucide="linkedin" class="w-6 h-6"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-white"><span class="sr-only">Instagram</span><i data-lucide="instagram" class="w-6 h-6"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-white"><span class="sr-only">YouTube</span><i data-lucide="youtube" class="w-6 h-6"></i></a>
+                </div>
+            </div>
         </section>
     </main>
+
+    <!-- Footer -->
     <footer class="bg-gray-800/30">
-        <!-- ... -->
+        <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 text-center text-gray-500">
+            <p>&copy; 2024 [Tên của bạn]. Đã đăng ký bản quyền.</p>
+        </div>
     </footer>
 
     <!-- NEW: Video Modal -->
@@ -99,7 +162,10 @@
         function renderPortfolio(projects) {
             if (!portfolioGrid) return;
             portfolioGrid.innerHTML = '';
-            if (projects.length === 0) { /* ... */ }
+            if (projects.length === 0) { 
+                portfolioGrid.innerHTML = `<p class="col-span-full text-center text-gray-400">Chưa có dự án nào được thêm.</p>`;
+                return;
+            }
             
             const categoryMap = { ui: 'Lập trình UI', design: 'Thiết kế', photo: 'Nhiếp ảnh', video: 'Video' };
             projects.forEach(project => {
@@ -172,13 +238,6 @@
         });
 
         // --- Existing Logic ---
-        onSnapshot(projectsCollectionRef, (snapshot) => { /* ... */ });
-        const filterButtons = document.querySelectorAll('.filter-btn');
-        filterButtons.forEach(button => { /* ... */ });
-        lucide.createIcons();
-        // ... (Mobile menu and navbar scroll logic remains the same)
-
-        // Helper functions (copy from previous versions)
         onSnapshot(projectsCollectionRef, (snapshot) => {
             const projects = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             renderPortfolio(projects);
@@ -186,6 +245,8 @@
             console.error("Error fetching projects:", error);
             if(portfolioGrid) portfolioGrid.innerHTML = `<p class="col-span-full text-center text-red-500">Không thể tải dự án.</p>`;
         });
+        
+        const filterButtons = document.querySelectorAll('.filter-btn');
         filterButtons.forEach(button => {
             button.addEventListener('click', () => {
                 filterButtons.forEach(btn => {
@@ -205,6 +266,42 @@
                 });
             });
         });
+
+        lucide.createIcons();
+        
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        if (mobileMenuButton) {
+            const mobileMenuIcons = mobileMenuButton.querySelectorAll('svg');
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+                mobileMenuIcons.forEach(icon => icon.classList.toggle('hidden'));
+            });
+        }
+        
+        document.querySelectorAll('a.nav-link').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                if(targetElement) {
+                    targetElement.scrollIntoView({ behavior: 'smooth' });
+                }
+                if(mobileMenu && !mobileMenu.classList.contains('hidden')) {
+                     mobileMenu.classList.add('hidden');
+                     mobileMenuButton.querySelectorAll('svg').forEach(icon => icon.classList.toggle('hidden'));
+                }
+            });
+        });
+        
+        const navbar = document.getElementById('navbar');
+        window.onscroll = function() {
+            if (navbar && (document.body.scrollTop > 50 || document.documentElement.scrollTop > 50)) {
+                navbar.classList.add("shadow-lg");
+            } else if (navbar) {
+                navbar.classList.remove("shadow-lg");
+            }
+        };
     </script>
 </body>
 </html>
