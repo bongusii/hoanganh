@@ -201,7 +201,15 @@
         import { getFirestore, collection, addDoc, getDocs, onSnapshot, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // --- CONFIGURATION ---
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : { apiKey: "...", authDomain: "...", projectId: "...", storageBucket: "...", messagingSenderId: "...", appId: "..." };
+        const firebaseConfig = {
+            apiKey: "AIzaSyCvot0nKpv9aVtYD-YKfKmFk2cR9jpeiBw",
+            authDomain: "anh-porfolio.firebaseapp.com",
+            projectId: "anh-porfolio",
+            storageBucket: "anh-porfolio.firebasestorage.app",
+            messagingSenderId: "798914641810",
+            appId: "1:798914641810:web:1eb4a5a377a3c9eb758b4b",
+            measurementId: "G-CCR470QE1Z"
+        };
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-portfolio-app';
 
         // --- FIREBASE INITIALIZATION ---
