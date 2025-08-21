@@ -89,9 +89,14 @@
         const toast = document.getElementById('toast');
         const toastMessage = document.getElementById('toast-message');
 
-        function showToast(message, isError = false) { /* ... */ }
+        // --- Helper Functions ---
+        function showToast(message, isError = false) {
+            toastMessage.textContent = message;
+            toast.classList.remove('opacity-0');
+            toast.style.backgroundColor = isError ? '#DC2626' : '#10B981';
+            setTimeout(() => { toast.classList.add('opacity-0'); }, 3000);
+        }
 
-        // NEW: Update URL field based on category
         function updateUrlField() {
             const selectedCategory = projectCategorySelect.value;
             if (selectedCategory === 'video') {
@@ -102,55 +107,7 @@
                 projectUrlInput.placeholder = 'https://example.com/image.jpg';
             }
         }
-        projectCategorySelect.addEventListener('change', updateUrlField);
-        updateUrlField(); // Call on initial load
 
-        // Authentication Logic
-        onAuthStateChanged(auth, user => { /* ... */ });
-        logoutButton.addEventListener('click', () => signOut(auth));
-
-        // Firestore Logic
-        function renderAdminList(projects) { /* ... */ }
-        onSnapshot(projectsCollectionRef, (snapshot) => { /* ... */ });
-
-        addProjectForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const title = document.getElementById('project-title').value;
-            const category = projectCategorySelect.value;
-            const url = projectUrlInput.value; // Changed from imageUrl to url
-            try {
-                // The field in Firestore is now just 'url'
-                await addDoc(projectsCollectionRef, { title, category, url });
-                showToast('Thêm dự án thành công!');
-                addProjectForm.reset();
-            } catch (error) {
-                console.error("Lỗi thêm dự án: ", error);
-                showToast('Có lỗi xảy ra, không thể thêm dự án.', true);
-            }
-        });
-        
-        adminProjectList.addEventListener('click', async (e) => { /* ... */ });
-
-        // Helper functions (copy from previous versions)
-        function showToast(message, isError = false) {
-            toastMessage.textContent = message;
-            toast.classList.remove('opacity-0');
-            toast.style.backgroundColor = isError ? '#DC2626' : '#10B981';
-            setTimeout(() => { toast.classList.add('opacity-0'); }, 3000);
-        }
-        onAuthStateChanged(auth, user => {
-            if (user) {
-                authContainer.style.display = 'none';
-                adminPanel.classList.remove('hidden');
-            } else {
-                adminPanel.classList.add('hidden');
-                authContainer.style.display = 'block';
-                signInAnonymously(auth).catch(error => {
-                    console.error("Lỗi đăng nhập:", error);
-                    document.getElementById('auth-status').textContent = `Lỗi xác thực.`;
-                });
-            }
-        });
         function renderAdminList(projects) {
              adminProjectList.innerHTML = '';
              if (projects.length === 0) {
@@ -170,10 +127,45 @@
                  adminProjectList.appendChild(item);
              });
         }
+
+        // --- Event Listeners & Main Logic ---
+        projectCategorySelect.addEventListener('change', updateUrlField);
+        logoutButton.addEventListener('click', () => signOut(auth));
+
+        onAuthStateChanged(auth, user => {
+            if (user) {
+                authContainer.style.display = 'none';
+                adminPanel.classList.remove('hidden');
+            } else {
+                adminPanel.classList.add('hidden');
+                authContainer.style.display = 'block';
+                signInAnonymously(auth).catch(error => {
+                    console.error("Lỗi đăng nhập:", error);
+                    document.getElementById('auth-status').textContent = `Lỗi xác thực.`;
+                });
+            }
+        });
+
         onSnapshot(projectsCollectionRef, (snapshot) => {
             const projects = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             renderAdminList(projects);
         });
+
+        addProjectForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const title = document.getElementById('project-title').value;
+            const category = projectCategorySelect.value;
+            const url = projectUrlInput.value;
+            try {
+                await addDoc(projectsCollectionRef, { title, category, url });
+                showToast('Thêm dự án thành công!');
+                addProjectForm.reset();
+            } catch (error) {
+                console.error("Lỗi thêm dự án: ", error);
+                showToast('Có lỗi xảy ra, không thể thêm dự án.', true);
+            }
+        });
+        
         adminProjectList.addEventListener('click', async (e) => {
             if (e.target.classList.contains('delete-btn')) {
                 const id = e.target.dataset.id;
@@ -188,6 +180,9 @@
                 }
             }
         });
+
+        // Initial call to set the correct label
+        updateUrlField();
     </script>
 </body>
 </html>
