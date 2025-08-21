@@ -8,7 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         body { font-family: 'Quicksand', sans-serif; }
@@ -17,13 +17,8 @@
         ::-webkit-scrollbar-thumb { background: #374151; border-radius: 10px; }
         .portfolio-item { transition: transform 0.3s ease, opacity 0.3s ease; cursor: pointer; }
         .portfolio-item.hidden-item { transform: scale(0.9); opacity: 0; display: none; }
-        /* NEW: Video Modal Styles */
-        #video-modal-overlay {
-            transition: opacity 0.3s ease-in-out;
-        }
-        #video-modal-content {
-            transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
-        }
+        #video-modal-overlay, #pdf-modal-overlay { transition: opacity 0.3s ease-in-out; }
+        #video-modal-content, #pdf-modal-content { transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out; }
         .progress-ring__circle {
             transition: stroke-dashoffset 0.8s ease-out;
             transform: rotate(-90deg);
@@ -34,7 +29,7 @@
 <body class="bg-gray-900 text-gray-200 antialiased">
 
     <!-- Navigation -->
-    <nav id="navbar" class="bg-gray-900/80 backdrop-blur-sm fixed w-full top-0 z-50 transition-all duration-300">
+    <nav id="navbar" class="fixed w-full top-0 z-50 transition-all duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16">
                 <div class="flex items-center">
@@ -67,7 +62,6 @@
         </div></div>
     </nav>
     
-    <!-- Hero Section -->
     <header id="hero" class="min-h-screen flex items-center bg-gray-900">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h1 class="text-4xl md:text-6xl font-extrabold text-white leading-tight mb-4">Chào bạn, tôi là <span class="text-teal-400">Hoàng Anh</span></h1>
@@ -76,8 +70,7 @@
         </div>
     </header>
 
-    <main>
-        <!-- About Section -->
+    <main class="bg-gray-900">
         <section id="about" class="py-20 sm:py-32">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="lg:grid lg:grid-cols-3 lg:gap-8 items-center">
@@ -92,7 +85,6 @@
             </div>
         </section>
 
-        <!-- Work/Portfolio Section -->
         <section id="work" class="py-20 sm:py-32 bg-gray-800/30">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center"><h2 class="text-3xl font-bold text-white sm:text-4xl">Dự án nổi bật</h2><p class="mt-4 text-lg text-gray-400">Một vài sản phẩm tôi đã thực hiện.</p></div>
@@ -111,17 +103,16 @@
                 </div>
             </div>
         </section>
-        
+
         <section id="skills" class="py-20 sm:py-32">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center">
                     <h2 class="text-3xl font-bold text-white sm:text-4xl">Công cụ & Kỹ năng</h2>
-                    <p class="mt-4 text-lg text-gray-400">Mức độ thành thạo của tôi với các công cụ và công nghệ.</p>
+                    <p class="mt-4 text-lg text-gray-400">Nhấp vào từng kỹ năng để xem chứng chỉ liên quan.</p>
                 </div>
                 <div class="mt-20 max-w-5xl mx-auto grid grid-cols-2 sm:grid-cols-4 gap-y-12 gap-x-8">
                     
-                    <!-- Skill: Illustrator -->
-                    <div class="flex flex-col items-center text-center">
+                    <div class="skill-item-clickable flex flex-col items-center text-center transform transition-transform duration-300 hover:scale-105 cursor-pointer" data-pdf-url="https://github.com/bongusii/hoanganh/raw/main/ILLUSTRATOR.pdf" data-skill-name="Chứng chỉ Adobe Illustrator">
                         <div class="relative w-32 h-32">
                             <svg class="w-full h-full" viewBox="0 0 120 120">
                                 <circle class="text-gray-700" stroke-width="8" stroke="currentColor" fill="transparent" r="50" cx="60" cy="60"/>
@@ -132,8 +123,7 @@
                         <h3 class="mt-4 text-lg font-semibold text-white">Adobe Illustrator</h3>
                     </div>
 
-                    <!-- Skill: Photoshop -->
-                    <div class="flex flex-col items-center text-center">
+                    <div class="skill-item-clickable flex flex-col items-center text-center transform transition-transform duration-300 hover:scale-105 cursor-pointer" data-pdf-url="#" data-skill-name="Chứng chỉ Adobe Photoshop">
                         <div class="relative w-32 h-32">
                             <svg class="w-full h-full" viewBox="0 0 120 120">
                                 <circle class="text-gray-700" stroke-width="8" stroke="currentColor" fill="transparent" r="50" cx="60" cy="60"/>
@@ -144,8 +134,7 @@
                         <h3 class="mt-4 text-lg font-semibold text-white">Adobe Photoshop</h3>
                     </div>
 
-                    <!-- Skill: Lightroom -->
-                    <div class="flex flex-col items-center text-center">
+                    <div class="skill-item-clickable flex flex-col items-center text-center transform transition-transform duration-300 hover:scale-105 cursor-pointer" data-pdf-url="#" data-skill-name="Chứng chỉ Adobe Lightroom">
                         <div class="relative w-32 h-32">
                             <svg class="w-full h-full" viewBox="0 0 120 120">
                                 <circle class="text-gray-700" stroke-width="8" stroke="currentColor" fill="transparent" r="50" cx="60" cy="60"/>
@@ -156,8 +145,7 @@
                         <h3 class="mt-4 text-lg font-semibold text-white">Adobe Lightroom</h3>
                     </div>
 
-                    <!-- Skill: DaVinci Resolve -->
-                    <div class="flex flex-col items-center text-center">
+                    <div class="skill-item-clickable flex flex-col items-center text-center transform transition-transform duration-300 hover:scale-105 cursor-pointer" data-pdf-url="#" data-skill-name="Chứng chỉ DaVinci Resolve">
                         <div class="relative w-32 h-32">
                             <svg class="w-full h-full" viewBox="0 0 120 120">
                                 <circle class="text-gray-700" stroke-width="8" stroke="currentColor" fill="transparent" r="50" cx="60" cy="60"/>
@@ -167,62 +155,10 @@
                         </div>
                         <h3 class="mt-4 text-lg font-semibold text-white">DaVinci Resolve</h3>
                     </div>
-
-                    <!-- Skill: HTML & CSS -->
-                    <div class="flex flex-col items-center text-center">
-                        <div class="relative w-32 h-32">
-                            <svg class="w-full h-full" viewBox="0 0 120 120">
-                                <circle class="text-gray-700" stroke-width="8" stroke="currentColor" fill="transparent" r="50" cx="60" cy="60"/>
-                                <circle class="progress-ring__circle text-teal-400" stroke-width="8" stroke-linecap="round" stroke="currentColor" fill="transparent" r="50" cx="60" cy="60" style="stroke-dasharray: 314; stroke-dashoffset: calc(314 - (314 * 90) / 100);"/>
-                            </svg>
-                            <span class="absolute inset-0 flex items-center justify-center text-2xl font-bold text-white">90%</span>
-                        </div>
-                        <h3 class="mt-4 text-lg font-semibold text-white">HTML & CSS</h3>
-                    </div>
-
-                    <!-- Skill: Microsoft Office -->
-                    <div class="flex flex-col items-center text-center">
-                        <div class="relative w-32 h-32">
-                            <svg class="w-full h-full" viewBox="0 0 120 120">
-                                <circle class="text-gray-700" stroke-width="8" stroke="currentColor" fill="transparent" r="50" cx="60" cy="60"/>
-                                <circle class="progress-ring__circle text-teal-400" stroke-width="8" stroke-linecap="round" stroke="currentColor" fill="transparent" r="50" cx="60" cy="60" style="stroke-dasharray: 314; stroke-dashoffset: calc(314 - (314 * 70) / 100);"/>
-                            </svg>
-                            <span class="absolute inset-0 flex items-center justify-center text-2xl font-bold text-white">70%</span>
-                        </div>
-                        <h3 class="mt-4 text-lg font-semibold text-white">Microsoft Office</h3>
-                    </div>
-                    
-                    <!-- Skill: PHP -->
-                    
-                    <div class="flex flex-col items-center text-center">
-                        <div class="relative w-32 h-32">
-                            <svg class="w-full h-full" viewBox="0 0 120 120">
-                                <circle class="text-gray-700" stroke-width="8" stroke="currentColor" fill="transparent" r="50" cx="60" cy="60"/>
-                                <circle class="progress-ring__circle text-teal-400" stroke-width="8" stroke-linecap="round" stroke="currentColor" fill="transparent" r="50" cx="60" cy="60" style="stroke-dasharray: 314; stroke-dashoffset: calc(314 - (314 * 20) / 100);"/>
-                            </svg>
-                            <span class="absolute inset-0 flex items-center justify-center text-2xl font-bold text-white">20%</span>
-                        </div>
-                        <h3 class="mt-4 text-lg font-semibold text-white">PHP (Researching)</h3>
-                    </div>
-                    
-                    <!-- Skill: Camera Using -->
-
-                    <div class="flex flex-col items-center text-center">
-                        <div class="relative w-32 h-32">
-                            <svg class="w-full h-full" viewBox="0 0 120 120">
-                                <circle class="text-gray-700" stroke-width="8" stroke="currentColor" fill="transparent" r="50" cx="60" cy="60"/>
-                                <circle class="progress-ring__circle text-teal-400" stroke-width="8" stroke-linecap="round" stroke="currentColor" fill="transparent" r="50" cx="60" cy="60" style="stroke-dasharray: 314; stroke-dashoffset: calc(314 - (314 * 90) / 100);"/>
-                            </svg>
-                            <span class="absolute inset-0 flex items-center justify-center text-2xl font-bold text-white">90%</span>
-                        </div>
-                        <h3 class="mt-4 text-lg font-semibold text-white">Camera Using</h3>
-                    </div>
-
                 </div>
             </div>
         </section>
 
-        <!-- Contact Section -->
         <section id="contact" class="py-24 sm:py-40">
             <div class="max-w-3xl mx-auto text-center px-4 sm:px-6 lg:px-8">
                 <h2 class="text-3xl font-bold text-white sm:text-4xl">Cùng hợp tác nhé!</h2>
@@ -238,45 +174,92 @@
         </section>
     </main>
 
-    <!-- Footer -->
     <footer class="bg-gray-800/30">
         <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 text-center text-gray-500">
-            <p>&copy; 2025 Phan Hoàng Anh. Đã đăng ký bản quyền.</p>
+            <p>&copy; 2025 Phan Hoang Anh. Đã đăng ký bản quyền.</p>
         </div>
     </footer>
 
-    <!-- NEW: Video Modal -->
-    <div id="video-modal-overlay" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 opacity-0 pointer-events-none">
+    <div id="video-modal-overlay" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-[51] opacity-0 pointer-events-none">
         <div id="video-modal-content" class="bg-black w-full max-w-4xl aspect-video rounded-lg shadow-2xl relative transform scale-95 opacity-0">
-            <button id="close-modal-button" class="absolute -top-3 -right-3 text-white bg-gray-800 rounded-full p-1 z-10">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            <button id="close-video-modal-button" class="absolute -top-3 -right-3 text-white bg-gray-800 rounded-full p-1 z-10">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
             </button>
             <iframe id="video-iframe" class="w-full h-full rounded-lg" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
         </div>
     </div>
-
+    
+    <div id="pdf-modal-overlay" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-[51] opacity-0 pointer-events-none">
+        <div id="pdf-modal-content" class="bg-gray-700 w-full max-w-4xl h-[90vh] rounded-lg shadow-2xl relative transform scale-95 opacity-0 flex flex-col">
+            <div class="flex justify-between items-center p-4 border-b border-gray-600 flex-shrink-0">
+                <h3 id="pdf-modal-title" class="text-xl font-semibold text-white">Chứng chỉ</h3>
+                <button id="close-pdf-modal-button" class="text-white bg-gray-800 rounded-full p-1 z-10">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+            <div class="flex-grow p-2">
+                <iframe id="pdf-iframe" class="w-full h-full rounded-b-lg" src="" frameborder="0"></iframe>
+            </div>
+        </div>
+    </div>
 
     <script type="module">
         import { db, projectsCollectionRef } from './firebase-config.js';
         import { onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
+        // --- Elements ---
         const portfolioGrid = document.getElementById('portfolio-grid');
-        const modalOverlay = document.getElementById('video-modal-overlay');
-        const modalContent = document.getElementById('video-modal-content');
-        const closeModalButton = document.getElementById('close-modal-button');
+        const videoModalOverlay = document.getElementById('video-modal-overlay');
+        const videoModalContent = document.getElementById('video-modal-content');
+        const closeVideoModalButton = document.getElementById('close-video-modal-button');
         const videoIframe = document.getElementById('video-iframe');
+        const pdfModalOverlay = document.getElementById('pdf-modal-overlay');
+        const pdfModalContent = document.getElementById('pdf-modal-content');
+        const closePdfModalButton = document.getElementById('close-pdf-modal-button');
+        const pdfIframe = document.getElementById('pdf-iframe');
+        const pdfModalTitle = document.getElementById('pdf-modal-title');
+        const skillsContainer = document.getElementById('skills');
 
-        // NEW: Helper function to extract YouTube Video ID
+        // --- Helper Functions ---
         function getYoutubeVideoId(url) {
             let videoId = '';
             const youtubeRegex = /^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
             const match = url.match(youtubeRegex);
-            if (match) {
-                videoId = match[1];
-            }
+            if (match) { videoId = match[1]; }
             return videoId;
         }
 
+        // --- Video Modal Logic ---
+        function openVideoModal(videoUrl) {
+            const videoId = getYoutubeVideoId(videoUrl);
+            if (!videoId) return;
+            videoIframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
+            videoModalOverlay.classList.remove('opacity-0', 'pointer-events-none');
+            videoModalContent.classList.remove('opacity-0', 'scale-95');
+        }
+        function closeVideoModal() {
+            videoModalOverlay.classList.add('opacity-0', 'pointer-events-none');
+            videoModalContent.classList.add('opacity-0', 'scale-95');
+            setTimeout(() => { videoIframe.src = ''; }, 300);
+        }
+        
+        // --- PDF Modal Logic ---
+        function openPdfModal(pdfUrl, skillName) {
+            if (!pdfUrl || pdfUrl.trim() === '#' || pdfUrl.trim() === '') return;
+            // CORRECTED: Use raw URL for GitHub PDFs
+            let displayUrl = pdfUrl.replace("github.com", "raw.githubusercontent.com").replace("/blob/", "/");
+            pdfIframe.src = displayUrl;
+            pdfModalTitle.textContent = skillName || 'Chứng chỉ';
+            pdfModalOverlay.classList.remove('opacity-0', 'pointer-events-none');
+            pdfModalContent.classList.remove('opacity-0', 'scale-95');
+        }
+        function closePdfModal() {
+            pdfModalOverlay.classList.add('opacity-0', 'pointer-events-none');
+            pdfModalContent.classList.add('opacity-0', 'scale-95');
+            setTimeout(() => { pdfIframe.src = ''; }, 300);
+        }
+
+        // --- Render Logic ---
         function renderPortfolio(projects) {
             if (!portfolioGrid) return;
             portfolioGrid.innerHTML = '';
@@ -284,92 +267,47 @@
                 portfolioGrid.innerHTML = `<p class="col-span-full text-center text-gray-400">Chưa có dự án nào được thêm.</p>`;
                 return;
             }
-            
             const categoryMap = { ui: 'Lập trình UI', design: 'Thiết kế', photo: 'Nhiếp ảnh', video: 'Video' };
             projects.forEach(project => {
                 const item = document.createElement('div');
                 item.className = 'portfolio-item group relative overflow-hidden rounded-lg shadow-lg';
                 item.dataset.category = project.category;
-
-                let imageUrl;
-                let playIconOverlay = '';
-
-                // --- LOGIC MỚI ĐỂ CHỌN THUMBNAIL ---
+                let imageUrl, playIconOverlay = '';
                 if (project.thumbnailUrl && project.thumbnailUrl.trim() !== '') {
-                    // 1. Ưu tiên dùng thumbnail tùy chọn nếu có.
                     imageUrl = project.thumbnailUrl;
                 } else if (project.category === 'video') {
-                    // 2. Nếu không có, tự tạo thumbnail cho video.
                     const videoId = getYoutubeVideoId(project.url);
-                    if (videoId) {
-                        imageUrl = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
-                    } else {
-                        imageUrl = project.url; // Dự phòng nếu link video không hợp lệ
-                    }
+                    imageUrl = videoId ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg` : project.url;
                 } else {
-                    // 3. Với các loại khác, dùng URL chính.
                     imageUrl = project.url;
                 }
-                // --- KẾT THÚC LOGIC MỚI ---
-
-                // Logic hiển thị icon Play cho video không thay đổi
                 if (project.category === 'video') {
                     item.dataset.videoUrl = project.url;
-                    playIconOverlay = `
-                        <div class="absolute inset-0 bg-black bg-opacity-20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                            <svg class="w-16 h-16 text-white opacity-80" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-                        </div>
-                    `;
+                    playIconOverlay = `<div class="absolute inset-0 bg-black bg-opacity-20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"><svg class="w-16 h-16 text-white opacity-80" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div>`;
                 }
-
-                item.innerHTML = `
-                    <img src="${imageUrl}" alt="${project.title}" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1f2937/34d399?text=Image+Error';">
-                    <div class="absolute inset-0 bg-black bg-opacity-60 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center p-4">
-                        <div class="text-center">
-                            <h3 class="text-xl font-bold text-white">${project.title}</h3>
-                            <p class="text-sm text-gray-300 mt-1">${categoryMap[project.category] || 'Chung'}</p>
-                        </div>
-                    </div>
-                    ${playIconOverlay}
-                `;
+                item.innerHTML = `<img src="${imageUrl}" alt="${project.title}" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1f2937/34d399?text=Image+Error';"><div class="absolute inset-0 bg-black bg-opacity-60 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center p-4"><div class="text-center"><h3 class="text-xl font-bold text-white">${project.title}</h3><p class="text-sm text-gray-300 mt-1">${categoryMap[project.category] || 'Chung'}</p></div></div>${playIconOverlay}`;
                 portfolioGrid.appendChild(item);
             });
         }
 
-        // NEW: Modal open/close logic
-        function openModal(videoUrl) {
-            const videoId = getYoutubeVideoId(videoUrl);
-            if (!videoId) return;
-            
-            videoIframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
-            modalOverlay.classList.remove('opacity-0', 'pointer-events-none');
-            modalContent.classList.remove('opacity-0', 'scale-95');
-        }
-
-        function closeModal() {
-            modalOverlay.classList.add('opacity-0', 'pointer-events-none');
-            modalContent.classList.add('opacity-0', 'scale-95');
-            // Stop the video from playing in the background
-            setTimeout(() => {
-                videoIframe.src = '';
-            }, 300); // Wait for transition to finish
-        }
-
+        // --- Event Listeners ---
         portfolioGrid.addEventListener('click', (e) => {
             const portfolioItem = e.target.closest('.portfolio-item');
             if (portfolioItem && portfolioItem.dataset.videoUrl) {
-                openModal(portfolioItem.dataset.videoUrl);
+                openVideoModal(portfolioItem.dataset.videoUrl);
             }
         });
-
-        closeModalButton.addEventListener('click', closeModal);
-        modalOverlay.addEventListener('click', (e) => {
-            if (e.target === modalOverlay) {
-                closeModal();
+        skillsContainer.addEventListener('click', (e) => {
+            const skillItem = e.target.closest('.skill-item-clickable');
+            if (skillItem) {
+                openPdfModal(skillItem.dataset.pdfUrl, skillItem.dataset.skillName);
             }
         });
+        closeVideoModalButton.addEventListener('click', closeVideoModal);
+        videoModalOverlay.addEventListener('click', (e) => { if (e.target === videoModalOverlay) closeVideoModal(); });
+        closePdfModalButton.addEventListener('click', closePdfModal);
+        pdfModalOverlay.addEventListener('click', (e) => { if (e.target === pdfModalOverlay) closePdfModal(); });
 
-        // --- Existing Logic ---
         onSnapshot(projectsCollectionRef, (snapshot) => {
             const projects = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             renderPortfolio(projects);
@@ -428,10 +366,10 @@
         
         const navbar = document.getElementById('navbar');
         window.onscroll = function() {
-            if (navbar && (document.body.scrollTop > 50 || document.documentElement.scrollTop > 50)) {
-                navbar.classList.add("shadow-lg");
-            } else if (navbar) {
-                navbar.classList.remove("shadow-lg");
+            if (document.body.scrollTop > 50 || document.documentElement.scrollTop > 50) {
+                navbar.classList.add("bg-gray-900/80", "backdrop-blur-sm", "shadow-lg");
+            } else {
+                navbar.classList.remove("bg-gray-900/80", "backdrop-blur-sm", "shadow-lg");
             }
         };
     </script>
