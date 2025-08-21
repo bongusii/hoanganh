@@ -246,27 +246,6 @@
         </div>
     </div>
 
-    <!-- NEW: Project Detail Modal -->
-    <div id="project-detail-modal-overlay" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-[51] opacity-0 pointer-events-none p-4">
-        <div id="project-detail-modal-content" class="bg-gray-800 w-full max-w-4xl max-h-[90vh] rounded-lg shadow-2xl relative transform scale-95 opacity-0 flex flex-col overflow-hidden">
-            <div class="flex justify-between items-center p-4 border-b border-gray-700 flex-shrink-0">
-                <h3 id="project-detail-title" class="text-xl font-semibold text-white">Chi tiết Dự án</h3>
-                <button id="close-project-detail-modal-button" class="text-white bg-gray-900 rounded-full p-1 z-10">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                </button>
-            </div>
-            <div class="flex-grow overflow-y-auto">
-                <img id="project-detail-image" src="" alt="Project Image" class="w-full h-auto object-cover">
-                <div class="p-6">
-                    <div id="project-detail-tech" class="flex flex-wrap gap-2 mb-4">
-                        <!-- Tech tags will be inserted here -->
-                    </div>
-                    <p id="project-detail-description" class="text-gray-300 whitespace-pre-wrap"></p>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <script type="module">
         import { db, projectsCollectionRef } from './firebase-config.js';
         import { onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
@@ -284,38 +263,6 @@
         const pdfModalTitle = document.getElementById('pdf-modal-title');
         const skillsContainer = document.getElementById('skills');
 
-        // Project Detail Modal Elements
-        const projectDetailModalOverlay = document.getElementById('project-detail-modal-overlay');
-        const projectDetailModalContent = document.getElementById('project-detail-modal-content');
-        const closeProjectDetailModalButton = document.getElementById('close-project-detail-modal-button');
-        const projectDetailTitle = document.getElementById('project-detail-title');
-        const projectDetailImage = document.getElementById('project-detail-image');
-        const projectDetailTech = document.getElementById('project-detail-tech');
-        const projectDetailDescription = document.getElementById('project-detail-description');
-
-        let fetchedProjects = []; // Store all projects here
-
-        // --- Render Logic ---
-        function renderPortfolio(projects) {
-            fetchedProjects = projects; // Update the global projects array
-            // ... (rest of the renderPortfolio function remains the same)
-            if (!portfolioGrid) return;
-            portfolioGrid.innerHTML = '';
-            if (projects.length === 0) { /* ... */ }
-            const categoryMap = { ui: 'Lập trình UI', design: 'Thiết kế', photo: 'Nhiếp ảnh', video: 'Video' };
-            projects.forEach(project => {
-                const item = document.createElement('div');
-                item.className = 'portfolio-item group relative overflow-hidden rounded-lg shadow-lg';
-                item.dataset.category = project.category;
-                item.dataset.id = project.id; // Add project ID
-                // ... (rest of the item creation logic is the same)
-                let imageUrl, playIconOverlay = '';
-                if (project.thumbnailUrl && project.thumbnailUrl.trim() !== '') { imageUrl = project.thumbnailUrl; } else if (project.category === 'video') { const videoId = getYoutubeVideoId(project.url); imageUrl = videoId ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg` : project.url; } else { imageUrl = project.url; }
-                if (project.category === 'video') { playIconOverlay = `<div class="absolute inset-0 bg-black bg-opacity-20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"><svg class="w-16 h-16 text-white opacity-80" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div>`; }
-                item.innerHTML = `<img src="${imageUrl}" alt="${project.title}" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1f2937/34d399?text=Image+Error';"><div class="absolute inset-0 bg-black bg-opacity-60 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center p-4"><div class="text-center"><h3 class="text-xl font-bold text-white">${project.title}</h3><p class="text-sm text-gray-300 mt-1">${categoryMap[project.category] || 'Chung'}</p></div></div>${playIconOverlay}`;
-                portfolioGrid.appendChild(item);
-            });
-        }
         // --- Helper Functions ---
         function getYoutubeVideoId(url) {
             let videoId = '';
@@ -409,35 +356,6 @@
             });
         }
 
-
-        // NEW: Project Detail Modal Logic
-        function openProjectDetailModal(project) {
-            if (!project) return;
-            projectDetailTitle.textContent = project.title;
-            projectDetailImage.src = project.url; // Use the main URL for the detail image
-            projectDetailDescription.textContent = project.description || 'Không có mô tả cho dự án này.';
-            
-            projectDetailTech.innerHTML = '';
-            if (project.technologies) {
-                project.technologies.split(',').forEach(tech => {
-                    if (tech.trim() !== '') {
-                        const tag = document.createElement('span');
-                        tag.className = 'bg-teal-500/20 text-teal-300 text-xs font-medium px-2.5 py-1 rounded-full';
-                        tag.textContent = tech.trim();
-                        projectDetailTech.appendChild(tag);
-                    }
-                });
-            }
-
-            projectDetailModalOverlay.classList.remove('opacity-0', 'pointer-events-none');
-            projectDetailModalContent.classList.remove('opacity-0', 'scale-95');
-        }
-
-        function closeProjectDetailModal() {
-            projectDetailModalOverlay.classList.add('opacity-0', 'pointer-events-none');
-            projectDetailModalContent.classList.add('opacity-0', 'scale-95');
-        }
-        
         // --- Event Listeners ---
         portfolioGrid.addEventListener('click', (e) => {
             const portfolioItem = e.target.closest('.portfolio-item');
