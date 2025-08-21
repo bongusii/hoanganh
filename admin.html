@@ -7,9 +7,9 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; }
+        body { font-family: 'Quicksand', sans-serif; }
     </style>
 </head>
 <body class="bg-gray-800">
@@ -51,9 +51,14 @@
                                 <option value="video">Video</option>
                             </select>
                         </div>
-                        <div class="mb-6">
-                            <label for="project-url" id="url-label" class="block text-gray-300 text-sm font-bold mb-2">URL Hình ảnh</label>
+                        <div class="mb-4">
+                            <label for="project-url" id="url-label" class="block text-gray-300 text-sm font-bold mb-2">URL Chính (Ảnh hoặc Video)</label>
                             <input type="url" id="project-url" placeholder="https://example.com/image.jpg" class="w-full bg-gray-700 border border-gray-600 rounded-lg py-2 px-3 text-white focus:outline-none focus:border-teal-500" required>
+                        </div>
+                        <!-- NEW: Thumbnail URL Field -->
+                        <div class="mb-6">
+                            <label for="project-thumbnail-url" class="block text-gray-300 text-sm font-bold mb-2">URL Thumbnail (Tùy chọn)</label>
+                            <input type="url" id="project-thumbnail-url" placeholder="Để trống nếu muốn tự động tạo/dùng URL chính" class="w-full bg-gray-700 border border-gray-600 rounded-lg py-2 px-3 text-white focus:outline-none focus:border-teal-500">
                         </div>
                         <button type="submit" class="w-full bg-teal-500 hover:bg-teal-600 text-white font-bold py-3 px-4 rounded-lg transition duration-300">Thêm dự án</button>
                     </form>
@@ -73,7 +78,6 @@
     <div id="toast" class="fixed bottom-5 right-5 bg-gray-800 text-white py-2 px-4 rounded-lg shadow-lg transition-opacity duration-300 opacity-0"><p id="toast-message"></p></div>
 
     <script type="module">
-        console.log("DEBUG: Admin script started.");
         import { db, auth, projectsCollectionRef } from './firebase-config.js';
         import { onAuthStateChanged, signInAnonymously, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { onSnapshot, addDoc, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
@@ -89,16 +93,8 @@
         const projectUrlInput = document.getElementById('project-url');
         const toast = document.getElementById('toast');
         const toastMessage = document.getElementById('toast-message');
-        const authStatus = document.getElementById('auth-status');
 
-        // --- Helper Functions ---
-        function showToast(message, isError = false) {
-            toastMessage.textContent = message;
-            toast.classList.remove('opacity-0');
-            toast.style.backgroundColor = isError ? '#DC2626' : '#10B981';
-            setTimeout(() => { toast.classList.add('opacity-0'); }, 3000);
-        }
-
+        function showToast(message, isError = false) { /* ... */ }
         function updateUrlField() {
             const selectedCategory = projectCategorySelect.value;
             if (selectedCategory === 'video') {
@@ -109,7 +105,59 @@
                 projectUrlInput.placeholder = 'https://example.com/image.jpg';
             }
         }
+        function renderAdminList(projects) { /* ... */ }
 
+        projectCategorySelect.addEventListener('change', updateUrlField);
+        logoutButton.addEventListener('click', () => signOut(auth));
+
+        onAuthStateChanged(auth, user => {
+            if (user) {
+                authContainer.style.display = 'none';
+                adminPanel.classList.remove('hidden');
+            } else {
+                adminPanel.classList.add('hidden');
+                authContainer.style.display = 'block';
+                signInAnonymously(auth).catch(error => {
+                    console.error("Lỗi đăng nhập:", error);
+                    document.getElementById('auth-status').textContent = `Lỗi xác thực.`;
+                });
+            }
+        });
+
+        onSnapshot(projectsCollectionRef, (snapshot) => {
+            const projects = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            renderAdminList(projects);
+        });
+
+        addProjectForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const title = document.getElementById('project-title').value;
+            const category = projectCategorySelect.value;
+            const url = projectUrlInput.value;
+            // NEW: Get the thumbnail URL
+            const thumbnailUrl = document.getElementById('project-thumbnail-url').value;
+            try {
+                // NEW: Save thumbnailUrl to Firestore
+                await addDoc(projectsCollectionRef, { title, category, url, thumbnailUrl });
+                showToast('Thêm dự án thành công!');
+                addProjectForm.reset();
+            } catch (error) {
+                console.error("Lỗi thêm dự án: ", error);
+                showToast('Có lỗi xảy ra, không thể thêm dự án.', true);
+            }
+        });
+        
+        adminProjectList.addEventListener('click', async (e) => { /* ... */ });
+
+        updateUrlField();
+        
+        // Helper functions (pasted for completeness)
+        function showToast(message, isError = false) {
+            toastMessage.textContent = message;
+            toast.classList.remove('opacity-0');
+            toast.style.backgroundColor = isError ? '#DC2626' : '#10B981';
+            setTimeout(() => { toast.classList.add('opacity-0'); }, 3000);
+        }
         function renderAdminList(projects) {
              adminProjectList.innerHTML = '';
              if (projects.length === 0) {
@@ -129,54 +177,6 @@
                  adminProjectList.appendChild(item);
              });
         }
-
-        // --- Event Listeners & Main Logic ---
-        projectCategorySelect.addEventListener('change', updateUrlField);
-        logoutButton.addEventListener('click', () => signOut(auth));
-
-        console.log("DEBUG: Setting up onAuthStateChanged listener...");
-        onAuthStateChanged(auth, user => {
-            console.log("DEBUG: onAuthStateChanged triggered. User object:", user);
-            if (user) {
-                console.log("DEBUG: User is authenticated. UID:", user.uid);
-                authContainer.style.display = 'none';
-                adminPanel.classList.remove('hidden');
-            } else {
-                console.log("DEBUG: User is not authenticated. Attempting to sign in anonymously...");
-                adminPanel.classList.add('hidden');
-                authContainer.style.display = 'block';
-                signInAnonymously(auth).catch(error => {
-                    console.error("DEBUG: Anonymous sign-in failed:", error);
-                    authStatus.textContent = `Lỗi xác thực: ${error.code}`;
-                    authStatus.classList.add('text-red-500');
-                });
-            }
-        });
-
-        console.log("DEBUG: Setting up onSnapshot listener for projects...");
-        onSnapshot(projectsCollectionRef, (snapshot) => {
-            console.log("DEBUG: Firestore snapshot received. Documents count:", snapshot.size);
-            const projects = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            renderAdminList(projects);
-        }, (error) => {
-            console.error("DEBUG: Firestore onSnapshot error:", error);
-        });
-
-        addProjectForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const title = document.getElementById('project-title').value;
-            const category = projectCategorySelect.value;
-            const url = projectUrlInput.value;
-            try {
-                await addDoc(projectsCollectionRef, { title, category, url });
-                showToast('Thêm dự án thành công!');
-                addProjectForm.reset();
-            } catch (error) {
-                console.error("Lỗi thêm dự án: ", error);
-                showToast('Có lỗi xảy ra, không thể thêm dự án.', true);
-            }
-        });
-        
         adminProjectList.addEventListener('click', async (e) => {
             if (e.target.classList.contains('delete-btn')) {
                 const id = e.target.dataset.id;
@@ -191,10 +191,6 @@
                 }
             }
         });
-
-        // Initial call to set the correct label
-        updateUrlField();
-        console.log("DEBUG: Admin script finished setup.");
     </script>
 </body>
 </html>
