@@ -3,113 +3,172 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin - Kiểm tra kết nối Firebase</title>
+    <title>Admin - Portfolio</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; }
-        .status-item {
-            padding: 0.75rem 1rem;
-            border-radius: 0.5rem;
-            margin-bottom: 0.75rem;
-            font-weight: 500;
-            transition: all 0.3s ease;
-        }
-        .status-pending { background-color: #374151; color: #D1D5DB; }
-        .status-success { background-color: #10B981; color: white; }
-        .status-error { background-color: #EF4444; color: white; }
     </style>
 </head>
-<body class="bg-gray-900 text-white">
+<body class="bg-gray-800">
 
-    <div class="min-h-screen flex items-center justify-center p-4">
-        <div class="max-w-xl w-full bg-gray-800 p-8 rounded-lg shadow-2xl">
-            <h1 class="text-2xl font-bold text-center mb-6">Trình chẩn đoán kết nối Firebase</h1>
-            <div id="diagnostics-list">
-                <div id="step1" class="status-item status-pending">Bước 1: Đang chờ tải tệp firebase-config.js...</div>
-                <div id="step2" class="status-item status-pending">Bước 2: Đang chờ khởi tạo Firebase...</div>
-                <div id="step3" class="status-item status-pending">Bước 3: Đang chờ đăng nhập ẩn danh...</div>
-                <div id="step4" class="status-item status-pending">Bước 4: Đang chờ kết nối Firestore...</div>
+    <div id="admin-page" class="min-h-screen p-4 sm:p-8">
+        <div class="max-w-4xl mx-auto">
+            <!-- Login Container -->
+            <div id="auth-container">
+                <div class="bg-gray-900 p-8 rounded-lg shadow-lg max-w-md mx-auto">
+                    <h2 class="text-2xl font-bold text-center text-white mb-6">Đăng nhập Admin</h2>
+                    <p id="auth-status" class="text-center text-gray-400">Đang xác thực, vui lòng chờ...</p>
+                </div>
             </div>
-            <div id="final-result" class="mt-6 text-center text-lg font-semibold hidden"></div>
+
+            <!-- Admin Panel (hidden by default) -->
+            <div id="admin-panel" class="hidden">
+                 <div class="flex justify-between items-center mb-8">
+                    <h1 class="text-3xl font-bold text-white">Trang quản trị</h1>
+                    <div>
+                        <a href="index.html" target="_blank" class="text-teal-400 hover:text-teal-300 mr-4">Xem trang chính</a>
+                        <button id="logout-button" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300">Đăng xuất</button>
+                    </div>
+                </div>
+
+                <!-- Add Project Form -->
+                <div class="bg-gray-900 p-8 rounded-lg shadow-lg mb-8">
+                    <h2 class="text-2xl font-bold text-white mb-6">Thêm dự án mới</h2>
+                    <form id="add-project-form">
+                        <div class="mb-4">
+                            <label for="project-title" class="block text-gray-300 text-sm font-bold mb-2">Tên dự án</label>
+                            <input type="text" id="project-title" class="w-full bg-gray-700 border border-gray-600 rounded-lg py-2 px-3 text-white focus:outline-none focus:border-teal-500" required>
+                        </div>
+                        <div class="mb-4">
+                            <label for="project-category" class="block text-gray-300 text-sm font-bold mb-2">Phân loại</label>
+                            <select id="project-category" class="w-full bg-gray-700 border border-gray-600 rounded-lg py-2 px-3 text-white focus:outline-none focus:border-teal-500" required>
+                                <option value="ui">Lập trình UI</option>
+                                <option value="design">Thiết kế</option>
+                                <option value="photo">Nhiếp ảnh</option>
+                                <option value="video">Video</option>
+                            </select>
+                        </div>
+                        <div class="mb-6">
+                            <label for="project-image-url" class="block text-gray-300 text-sm font-bold mb-2">URL Hình ảnh</label>
+                            <input type="url" id="project-image-url" placeholder="https://example.com/image.jpg" class="w-full bg-gray-700 border border-gray-600 rounded-lg py-2 px-3 text-white focus:outline-none focus:border-teal-500" required>
+                        </div>
+                        <button type="submit" class="w-full bg-teal-500 hover:bg-teal-600 text-white font-bold py-3 px-4 rounded-lg transition duration-300">Thêm dự án</button>
+                    </form>
+                </div>
+
+                <!-- Project List -->
+                <div>
+                    <h2 class="text-2xl font-bold text-white mb-6">Danh sách dự án</h2>
+                    <div id="admin-project-list" class="space-y-4">
+                         <p class="text-gray-400">Đang tải danh sách...</p>
+                    </div>
+                </div>
+            </div>
         </div>
+    </div>
+    
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-5 right-5 bg-gray-800 text-white py-2 px-4 rounded-lg shadow-lg transition-opacity duration-300 opacity-0">
+        <p id="toast-message"></p>
     </div>
 
     <script type="module">
-        const step1 = document.getElementById('step1');
-        const step2 = document.getElementById('step2');
-        const step3 = document.getElementById('step3');
-        const step4 = document.getElementById('step4');
-        const finalResult = document.getElementById('final-result');
+        import { db, auth, projectsCollectionRef } from './firebase-config.js';
+        import { onAuthStateChanged, signInAnonymously, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { onSnapshot, addDoc, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        function updateStatus(element, success, message) {
-            element.classList.remove('status-pending');
-            element.classList.add(success ? 'status-success' : 'status-error');
-            element.textContent = message;
+        // UI Elements
+        const authContainer = document.getElementById('auth-container');
+        const adminPanel = document.getElementById('admin-panel');
+        const logoutButton = document.getElementById('logout-button');
+        const addProjectForm = document.getElementById('add-project-form');
+        const adminProjectList = document.getElementById('admin-project-list');
+        const toast = document.getElementById('toast');
+        const toastMessage = document.getElementById('toast-message');
+
+        function showToast(message, isError = false) {
+            toastMessage.textContent = message;
+            toast.classList.remove('opacity-0');
+            toast.style.backgroundColor = isError ? '#DC2626' : '#10B981';
+            setTimeout(() => { toast.classList.add('opacity-0'); }, 3000);
         }
 
-        async function runDiagnostics() {
-            try {
-                // Step 1: Check if config is loaded
-                const configModule = await import('./firebase-config.js');
-                if (configModule && configModule.auth && configModule.db) {
-                    updateStatus(step1, true, '✅ Bước 1: Tải tệp firebase-config.js thành công.');
-                } else {
-                    throw new Error('Tệp firebase-config.js không chứa các export cần thiết.');
-                }
-
-                const { auth, db, projectsCollectionRef } = configModule;
-                
-                // Step 2: Firebase is already initialized in the config file
-                updateStatus(step2, true, '✅ Bước 2: Khởi tạo Firebase thành công.');
-
-                // Step 3: Sign in
-                try {
-                    const { signInAnonymously, onAuthStateChanged } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js");
-                    
-                    await new Promise((resolve, reject) => {
-                        const unsubscribe = onAuthStateChanged(auth, (user) => {
-                            unsubscribe();
-                            if (user) {
-                                updateStatus(step3, true, `✅ Bước 3: Đăng nhập thành công với User ID: ${user.uid}`);
-                                resolve(user);
-                            } else {
-                                // This part might not be hit if sign-in fails below, but good for safety
-                                reject(new Error('Không nhận được thông tin user sau khi auth state thay đổi.'));
-                            }
-                        }, reject);
-
-                        signInAnonymously(auth).catch(reject);
-                    });
-
-                } catch (error) {
-                    updateStatus(step3, false, `❌ Bước 3: Đăng nhập ẩn danh thất bại. Lỗi: ${error.message}`);
-                    throw error; // Stop the process
-                }
-
-                // Step 4: Test Firestore connection
-                try {
-                    const { getDocs } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
-                    await getDocs(projectsCollectionRef);
-                    updateStatus(step4, true, '✅ Bước 4: Kết nối và đọc dữ liệu từ Firestore thành công.');
-                } catch (error) {
-                    updateStatus(step4, false, `❌ Bước 4: Kết nối Firestore thất bại. Lỗi: ${error.message}`);
-                    throw error; // Stop the process
-                }
-
-                finalResult.textContent = '🎉 Chúc mừng! Mọi thứ đã được kết nối chính xác.';
-                finalResult.classList.remove('hidden');
-                finalResult.classList.add('text-green-400');
-
-            } catch (error) {
-                console.error("Lỗi chẩn đoán:", error);
-                finalResult.textContent = '💔 Đã xảy ra lỗi. Vui lòng kiểm tra lại các bước trên và đảm bảo cấu hình chính xác.';
-                finalResult.classList.remove('hidden');
-                finalResult.classList.add('text-red-400');
+        // Authentication Logic
+        onAuthStateChanged(auth, user => {
+            if (user) {
+                authContainer.style.display = 'none';
+                adminPanel.classList.remove('hidden');
+            } else {
+                adminPanel.classList.add('hidden');
+                authContainer.style.display = 'block';
+                // Automatically sign in if not logged in
+                signInAnonymously(auth).catch(error => {
+                    console.error("Lỗi đăng nhập:", error);
+                    document.getElementById('auth-status').textContent = `Lỗi xác thực.`;
+                });
             }
+        });
+
+        logoutButton.addEventListener('click', () => signOut(auth));
+
+        // Firestore Logic
+        function renderAdminList(projects) {
+             adminProjectList.innerHTML = '';
+             if (projects.length === 0) {
+                 adminProjectList.innerHTML = `<p class="text-gray-400">Chưa có dự án nào.</p>`;
+                 return;
+             }
+             projects.forEach(project => {
+                 const item = document.createElement('div');
+                 item.className = 'bg-gray-700 p-4 rounded-lg flex items-center justify-between';
+                 item.innerHTML = `
+                    <div>
+                        <h3 class="font-bold text-white">${project.title}</h3>
+                        <p class="text-sm text-gray-400 uppercase">${project.category}</p>
+                    </div>
+                    <button data-id="${project.id}" class="delete-btn bg-red-600 hover:bg-red-700 text-white font-bold py-1 px-3 rounded-md transition duration-300">Xóa</button>
+                 `;
+                 adminProjectList.appendChild(item);
+             });
         }
 
-        runDiagnostics();
+        onSnapshot(projectsCollectionRef, (snapshot) => {
+            const projects = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            renderAdminList(projects);
+        });
+
+        addProjectForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const title = document.getElementById('project-title').value;
+            const category = document.getElementById('project-category').value;
+            const imageUrl = document.getElementById('project-image-url').value;
+            try {
+                await addDoc(projectsCollectionRef, { title, category, imageUrl });
+                showToast('Thêm dự án thành công!');
+                addProjectForm.reset();
+            } catch (error) {
+                console.error("Lỗi thêm dự án: ", error);
+                showToast('Có lỗi xảy ra, không thể thêm dự án.', true);
+            }
+        });
+        
+        adminProjectList.addEventListener('click', async (e) => {
+            if (e.target.classList.contains('delete-btn')) {
+                const id = e.target.dataset.id;
+                if (confirm('Bạn có chắc chắn muốn xóa dự án này?')) {
+                    try {
+                        await deleteDoc(doc(db, "projects", id));
+                        showToast('Xóa dự án thành công!');
+                    } catch (error) {
+                        console.error("Lỗi xóa dự án: ", error);
+                        showToast('Có lỗi xảy ra, không thể xóa dự án.', true);
+                    }
+                }
+            }
+        });
     </script>
 </body>
 </html>
