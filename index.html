@@ -17,8 +17,8 @@
         ::-webkit-scrollbar-thumb { background: #374151; border-radius: 10px; }
         .portfolio-item { transition: transform 0.3s ease, opacity 0.3s ease; cursor: pointer; }
         .portfolio-item.hidden-item { transform: scale(0.9); opacity: 0; display: none; }
-        #video-modal-overlay, #pdf-modal-overlay, #project-detail-modal-overlay, #rating-modal-overlay { transition: opacity 0.3s ease-in-out; } /* BỔ SUNG: #rating-modal-overlay */
-        #video-modal-content, #pdf-modal-content, #project-detail-modal-content, #rating-modal-content { transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out; } /* BỔ SUNG: #rating-modal-content */
+        #video-modal-overlay, #pdf-modal-overlay, #project-detail-modal-overlay { transition: opacity 0.3s ease-in-out; }
+        #video-modal-content, #pdf-modal-content, #project-detail-modal-content { transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out; }
         .progress-ring__circle {
             transition: stroke-dashoffset 0.8s ease-out;
             transform: rotate(-90deg);
@@ -33,17 +33,6 @@
         #visitor-counter.show {
             transform: translateY(0);
             opacity: 1;
-        }
-        /* BỔ SUNG: CSS cho Rating & Comment */
-        .rating-stars label {
-            color: #4b5563;
-            cursor: pointer;
-            transition: color 0.2s;
-        }
-        .rating-stars input:checked ~ label,
-        .rating-stars:not(:checked) > label:hover,
-        .rating-stars:not(:checked) > label:hover ~ label {
-            color: #f59e0b;
         }
     </style>
 </head>
@@ -61,7 +50,6 @@
                         <a href="#about" class="nav-link text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Giới thiệu</a>
                         <a href="#work" class="nav-link text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Dự án</a>
                         <a href="#skills" class="nav-link text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Kỹ năng</a>
-                        <a href="#rating" class="nav-link text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Đánh giá</a>
                         <a href="#contact" class="nav-link text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Liên hệ</a>
                     </div>
                 </div>
@@ -79,7 +67,6 @@
             <a href="#about" class="nav-link text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Giới thiệu</a>
             <a href="#work" class="nav-link text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Dự án</a>
             <a href="#skills" class="nav-link text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Kỹ năng</a>
-            <a href="#rating" class="nav-link text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Đánh giá</a>
             <a href="#contact" class="nav-link text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Liên hệ</a>
         </div></div>
     </nav>
@@ -133,38 +120,92 @@
                     <p class="mt-4 text-lg text-gray-400">Nhấp vào từng kỹ năng để xem chứng chỉ liên quan.</p>
                 </div>
                 <div class="mt-20 max-w-5xl mx-auto grid grid-cols-2 sm:grid-cols-4 gap-y-12 gap-x-8">
-                    </div>
-            </div>
-        </section>
-
-        <section id="rating" class="py-20 sm:py-32 bg-gray-800/30">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center">
-                    <h2 class="text-3xl font-bold text-white sm:text-4xl">Đánh giá & Phản hồi</h2>
-                    <p class="mt-4 text-lg text-gray-400">Sự hài lòng của bạn là động lực của tôi.</p>
-                    
-                    <div class="mt-12 flex flex-col items-center">
-                        <div id="rating-display" class="flex items-center space-x-1 text-gray-500 text-3xl">
-                            </div>
-                        <p class="mt-4 text-gray-300">
-                            <span id="average-rating" class="font-bold text-xl text-white">...</span> trên 5 sao
-                            <span class="text-gray-500 mx-2">|</span>
-                            <span id="total-ratings" class="font-bold">...</span> lượt đánh giá
-                        </p>
-                    </div>
-
-                    <div class="mt-10">
-                        <button id="open-rating-modal-btn" class="bg-teal-500 text-white font-bold py-3 px-8 rounded-full hover:bg-teal-600 transition duration-300 text-lg">Để lại đánh giá</button>
-                        <p id="rating-thank-you" class="hidden mt-4 text-teal-400">Cảm ơn bạn! Bình luận của bạn đang chờ được duyệt.</p>
-                    </div>
-                </div>
-
-                <div class="mt-20 max-w-3xl mx-auto">
-                    <h3 class="text-2xl font-bold text-white text-center mb-8">Mọi người nói gì...</h3>
-                    <div id="comment-list" class="space-y-6">
+                    <div class="skill-item-clickable flex flex-col items-center text-center transform transition-transform duration-300 hover:scale-105 cursor-pointer" data-pdf-url="https://drive.google.com/file/d/1SW7rLSqwkjG1EJf2BEetnKXd9iioM_sB/preview" data-skill-name="Chứng chỉ Adobe Illustrator">
+                        <div class="relative w-32 h-32">
+                            <svg class="w-full h-full" viewBox="0 0 120 120">
+                                <circle class="text-gray-700" stroke-width="8" stroke="currentColor" fill="transparent" r="50" cx="60" cy="60"/>
+                                <circle class="progress-ring__circle text-teal-400" stroke-width="8" stroke-linecap="round" stroke="currentColor" fill="transparent" r="50" cx="60" cy="60" style="stroke-dasharray: 314; stroke-dashoffset: calc(314 - (314 * 90) / 100);"/>
+                            </svg>
+                            <span class="absolute inset-0 flex items-center justify-center text-2xl font-bold text-white">90%</span>
                         </div>
-                    <div class="text-center mt-8">
-                        <button id="load-more-comments-btn" class="hidden bg-gray-700 text-gray-300 hover:bg-gray-600 px-6 py-2 rounded-full font-medium">Xem thêm</button>
+                        <h3 class="mt-4 text-lg font-semibold text-white">Adobe Illustrator</h3>
+                    </div>
+
+                    <div class="skill-item-clickable flex flex-col items-center text-center transform transition-transform duration-300 hover:scale-105 cursor-pointer" data-pdf-url="https://drive.google.com/file/d/180nKtCpot_b18NmOXI8TBpd1smStpHiR/preview" data-skill-name="Chứng chỉ Adobe Photoshop">
+                        <div class="relative w-32 h-32">
+                            <svg class="w-full h-full" viewBox="0 0 120 120">
+                                <circle class="text-gray-700" stroke-width="8" stroke="currentColor" fill="transparent" r="50" cx="60" cy="60"/>
+                                <circle class="progress-ring__circle text-teal-400" stroke-width="8" stroke-linecap="round" stroke="currentColor" fill="transparent" r="50" cx="60" cy="60" style="stroke-dasharray: 314; stroke-dashoffset: calc(314 - (314 * 85) / 100);"/>
+                            </svg>
+                            <span class="absolute inset-0 flex items-center justify-center text-2xl font-bold text-white">85%</span>
+                        </div>
+                        <h3 class="mt-4 text-lg font-semibold text-white">Adobe Photoshop</h3>
+                    </div>
+
+                    <div class="skill-item-clickable flex flex-col items-center text-center transform transition-transform duration-300 hover:scale-105 cursor-pointer" data-pdf-url="#" data-skill-name="#">
+                        <div class="relative w-32 h-32">
+                            <svg class="w-full h-full" viewBox="0 0 120 120">
+                                <circle class="text-gray-700" stroke-width="8" stroke="currentColor" fill="transparent" r="50" cx="60" cy="60"/>
+                                <circle class="progress-ring__circle text-teal-400" stroke-width="8" stroke-linecap="round" stroke="currentColor" fill="transparent" r="50" cx="60" cy="60" style="stroke-dasharray: 314; stroke-dashoffset: calc(314 - (314 * 80) / 100);"/>
+                            </svg>
+                            <span class="absolute inset-0 flex items-center justify-center text-2xl font-bold text-white">80%</span>
+                        </div>
+                        <h3 class="mt-4 text-lg font-semibold text-white">Adobe Lightroom</h3>
+                    </div>
+
+                    <div class="skill-item-clickable flex flex-col items-center text-center transform transition-transform duration-300 hover:scale-105 cursor-pointer" data-pdf-url="#" data-skill-name="#">
+                        <div class="relative w-32 h-32">
+                            <svg class="w-full h-full" viewBox="0 0 120 120">
+                                <circle class="text-gray-700" stroke-width="8" stroke="currentColor" fill="transparent" r="50" cx="60" cy="60"/>
+                                <circle class="progress-ring__circle text-teal-400" stroke-width="8" stroke-linecap="round" stroke="currentColor" fill="transparent" r="50" cx="60" cy="60" style="stroke-dasharray: 314; stroke-dashoffset: calc(314 - (314 * 80) / 100);"/>
+                            </svg>
+                            <span class="absolute inset-0 flex items-center justify-center text-2xl font-bold text-white">80%</span>
+                        </div>
+                        <h3 class="mt-4 text-lg font-semibold text-white">DaVinci Resolve</h3>
+                    </div>
+                    
+                    <div class="skill-item-clickable flex flex-col items-center text-center transform transition-transform duration-300 hover:scale-105 cursor-pointer" data-pdf-url="https://drive.google.com/file/d/1L9D9sy74lprcvuBByDA8eg47kxHAKvrq/preview" data-skill-name="Chứng chỉ Microsoft Word">
+                        <div class="relative w-32 h-32">
+                            <svg class="w-full h-full" viewBox="0 0 120 120">
+                                <circle class="text-gray-700" stroke-width="8" stroke="currentColor" fill="transparent" r="50" cx="60" cy="60"/>
+                                <circle class="progress-ring__circle text-teal-400" stroke-width="8" stroke-linecap="round" stroke="currentColor" fill="transparent" r="50" cx="60" cy="60" style="stroke-dasharray: 314; stroke-dashoffset: calc(314 - (314 * 70) / 100);"/>
+                            </svg>
+                            <span class="absolute inset-0 flex items-center justify-center text-2xl font-bold text-white">70%</span>
+                        </div>
+                        <h3 class="mt-4 text-lg font-semibold text-white">Microsoft Word</h3>
+                    </div>
+
+                    <div class="skill-item-clickable flex flex-col items-center text-center transform transition-transform duration-300 hover:scale-105 cursor-pointer" data-pdf-url="https://drive.google.com/file/d/1I57E5D_B6hLqLm4WzlSYYPOEAw32V7HS/preview" data-skill-name="Chứng chỉ Microsoft Powerpoint">
+                        <div class="relative w-32 h-32">
+                            <svg class="w-full h-full" viewBox="0 0 120 120">
+                                <circle class="text-gray-700" stroke-width="8" stroke="currentColor" fill="transparent" r="50" cx="60" cy="60"/>
+                                <circle class="progress-ring__circle text-teal-400" stroke-width="8" stroke-linecap="round" stroke="currentColor" fill="transparent" r="50" cx="60" cy="60" style="stroke-dasharray: 314; stroke-dashoffset: calc(314 - (314 * 70) / 100);"/>
+                            </svg>
+                            <span class="absolute inset-0 flex items-center justify-center text-2xl font-bold text-white">70%</span>
+                        </div>
+                        <h3 class="mt-4 text-lg font-semibold text-white">Microsoft Powerpoint</h3>
+                    </div>
+
+                    <div class="skill-item-clickable flex flex-col items-center text-center transform transition-transform duration-300 hover:scale-105 cursor-pointer" data-pdf-url="https://drive.google.com/file/d/1DlF8K1zX8YdAS__1n-ME-HlxGpxnhkgJ/preview" data-skill-name="Chứng chỉ EFSET English Certificate">
+                        <div class="relative w-32 h-32">
+                            <svg class="w-full h-full" viewBox="0 0 120 120">
+                                <circle class="text-gray-700" stroke-width="8" stroke="currentColor" fill="transparent" r="50" cx="60" cy="60"/>
+                                <circle class="progress-ring__circle text-teal-400" stroke-width="8" stroke-linecap="round" stroke="currentColor" fill="transparent" r="50" cx="60" cy="60" style="stroke-dasharray: 314; stroke-dashoffset: calc(314 - (314 * 65) / 100);"/>
+                            </svg>
+                            <span class="absolute inset-0 flex items-center justify-center text-2xl font-bold text-white">65%</span>
+                        </div>
+                        <h3 class="mt-4 text-lg font-semibold text-white">English Certificate (EFSET)</h3>
+                    </div>
+
+                    <div class="skill-item-clickable flex flex-col items-center text-center transform transition-transform duration-300 hover:scale-105 cursor-pointer" data-pdf-url="#" data-skill-name="#">
+                        <div class="relative w-32 h-32">
+                            <svg class="w-full h-full" viewBox="0 0 120 120">
+                                <circle class="text-gray-700" stroke-width="8" stroke="currentColor" fill="transparent" r="50" cx="60" cy="60"/>
+                                <circle class="progress-ring__circle text-teal-400" stroke-width="8" stroke-linecap="round" stroke="currentColor" fill="transparent" r="50" cx="60" cy="60" style="stroke-dasharray: 314; stroke-dashoffset: calc(314 - (314 * 80) / 100);"/>
+                            </svg>
+                            <span class="absolute inset-0 flex items-center justify-center text-2xl font-bold text-white">80%</span>
+                        </div>
+                        <h3 class="mt-4 text-lg font-semibold text-white">Cameras Using Skills</h3>
                     </div>
                 </div>
             </div>
@@ -192,41 +233,43 @@
     </footer>
 
     <div id="video-modal-overlay" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-[51] opacity-0 pointer-events-none">
-        </div>
-    <div id="pdf-modal-overlay" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-[51] opacity-0 pointer-events-none">
-        </div>
-    <div id="project-detail-modal-overlay" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-[51] opacity-0 pointer-events-none p-4">
-        </div>
-
-    <div id="rating-modal-overlay" class="hidden fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-[52] p-4">
-        <div id="rating-modal-content" class="bg-gray-800 w-full max-w-md rounded-lg shadow-2xl relative transform scale-95 opacity-0">
-            <button id="close-rating-modal-btn" class="absolute top-3 right-3 text-gray-400 hover:text-white">
-                <i data-lucide="x" class="w-6 h-6"></i>
+        <div id="video-modal-content" class="bg-black w-full max-w-4xl aspect-video rounded-lg shadow-2xl relative transform scale-95 opacity-0">
+            <button id="close-video-modal-button" class="absolute -top-3 -right-3 text-white bg-gray-800 rounded-full p-1 z-10">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
             </button>
-            <div class="p-8">
-                <h3 class="text-2xl font-semibold text-white mb-2 text-center">Để lại đánh giá của bạn</h3>
-                <p class="text-gray-400 mb-6 text-center">Hãy chọn số sao và chia sẻ cảm nhận nhé.</p>
-                
-                <form id="rating-form">
-                    <div class="flex items-center justify-center flex-row-reverse text-5xl rating-stars mb-6">
-                        <input type="radio" id="star5" name="rating" value="5" class="sr-only" required /><label for="star5" title="5 sao">&#9733;</label>
-                        <input type="radio" id="star4" name="rating" value="4" class="sr-only" /><label for="star4" title="4 sao">&#9733;</label>
-                        <input type="radio" id="star3" name="rating" value="3" class="sr-only" /><label for="star3" title="3 sao">&#9733;</label>
-                        <input type="radio" id="star2" name="rating" value="2" class="sr-only" /><label for="star2" title="2 sao">&#9733;</label>
-                        <input type="radio" id="star1" name="rating" value="1" class="sr-only" /><label for="star1" title="1 sao">&#9733;</label>
+            <iframe id="video-iframe" class="w-full h-full rounded-lg" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+    </div>
+    
+    <div id="pdf-modal-overlay" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-[51] opacity-0 pointer-events-none">
+        <div id="pdf-modal-content" class="bg-gray-700 w-full max-w-4xl h-[90vh] rounded-lg shadow-2xl relative transform scale-95 opacity-0 flex flex-col">
+            <div class="flex justify-between items-center p-4 border-b border-gray-600 flex-shrink-0">
+                <h3 id="pdf-modal-title" class="text-xl font-semibold text-white">Chứng chỉ</h3>
+                <button id="close-pdf-modal-button" class="text-white bg-gray-800 rounded-full p-1 z-10">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+            <div class="flex-grow p-2">
+                <iframe id="pdf-iframe" class="w-full h-full rounded-b-lg" src="" frameborder="0"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <div id="project-detail-modal-overlay" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-[51] opacity-0 pointer-events-none p-4">
+        <div id="project-detail-modal-content" class="bg-gray-800 w-full max-w-4xl max-h-[90vh] rounded-lg shadow-2xl relative transform scale-95 opacity-0 flex flex-col overflow-hidden">
+            <div class="flex justify-between items-center p-4 border-b border-gray-700 flex-shrink-0">
+                <h3 id="project-detail-title" class="text-xl font-semibold text-white">Chi tiết Dự án</h3>
+                <button id="close-project-detail-modal-button" class="text-white bg-gray-900 rounded-full p-1 z-10">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+            <div class="flex-grow overflow-y-auto">
+                <img id="project-detail-image" src="" alt="Project Image" class="w-full h-auto object-cover" loading="lazy">
+                <div class="p-6">
+                    <div id="project-detail-tech" class="flex flex-wrap gap-2 mb-4">
                     </div>
-                    <div class="space-y-4">
-                        <div>
-                            <label for="comment-name" class="block text-gray-300 text-sm font-bold mb-2">Tên của bạn</label>
-                            <input type="text" id="comment-name" name="name" placeholder="Tên hiển thị (hoặc để trống)" class="w-full bg-gray-700 border border-gray-600 rounded-lg py-2 px-3 text-white focus:outline-none focus:border-teal-500">
-                        </div>
-                        <div>
-                            <label for="comment-text" class="block text-gray-300 text-sm font-bold mb-2">Bình luận</label>
-                            <textarea id="comment-text" name="comment" rows="4" placeholder="Chia sẻ cảm nhận của bạn ở đây..." class="w-full bg-gray-700 border border-gray-600 rounded-lg py-2 px-3 text-white focus:outline-none focus:border-teal-500" required></textarea>
-                        </div>
-                    </div>
-                    <button type="submit" class="w-full mt-8 bg-teal-500 hover:bg-teal-600 text-white font-bold py-3 px-4 rounded-lg transition duration-300">Gửi đi</button>
-                </form>
+                    <p id="project-detail-description" class="text-gray-300 whitespace-pre-wrap"></p>
+                </div>
             </div>
         </div>
     </div>
@@ -239,13 +282,9 @@
     <script type="module">
         import { db, projectsCollectionRef } from './firebase-config.js';
         import { onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-        // BỔ SUNG: Import đầy đủ các hàm cần thiết của Firestore
-        import { 
-            doc, getDoc, updateDoc, increment, getDocs, runTransaction,
-            collection, query, where, orderBy, limit, Timestamp, startAfter, addDoc 
-        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        // Import Firestore functions for counter
+        import { doc, getDoc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // Các biến có sẵn
         const portfolioGrid = document.getElementById('portfolio-grid');
         const videoModalOverlay = document.getElementById('video-modal-overlay');
         const videoModalContent = document.getElementById('video-modal-content');
@@ -264,42 +303,35 @@
         const projectDetailImage = document.getElementById('project-detail-image');
         const projectDetailTech = document.getElementById('project-detail-tech');
         const projectDetailDescription = document.getElementById('project-detail-description');
+        
         let fetchedProjects = [];
+
+        // --- VISITOR COUNTER LOGIC ---
         const visitorCounterPopup = document.getElementById('visitor-counter');
         const visitCountSpan = document.getElementById('visit-count');
-        
-        // BỔ SUNG: Các biến cho Rating & Comment
-        const ratingDisplay = document.getElementById('rating-display');
-        const averageRatingSpan = document.getElementById('average-rating');
-        const totalRatingsSpan = document.getElementById('total-ratings');
-        const openRatingModalBtn = document.getElementById('open-rating-modal-btn');
-        const closeRatingModalBtn = document.getElementById('close-rating-modal-btn');
-        const ratingModalOverlay = document.getElementById('rating-modal-overlay');
-        const ratingModalContent = document.getElementById('rating-modal-content');
-        const ratingForm = document.getElementById('rating-form');
-        const ratingThankYou = document.getElementById('rating-thank-you');
-        const commentList = document.getElementById('comment-list');
-        const loadMoreBtn = document.getElementById('load-more-comments-btn');
-        let lastVisibleComment = null;
+        const counterRef = doc(db, "counters", "visits");
 
-
-        // --- LOGIC CÓ SẴN ---
-        // VISITOR COUNTER LOGIC
         async function updateVisitorCount() {
-            const counterRef = doc(db, "counters", "visits");
             try {
                 const hasVisited = sessionStorage.getItem('hasVisitedPortfolio');
+
+                // Only increment if the user hasn't visited in this session
                 if (!hasVisited) {
                     await updateDoc(counterRef, { count: increment(1) });
                     sessionStorage.setItem('hasVisitedPortfolio', 'true');
                 }
+
+                // Get the latest count and display it
                 const docSnap = await getDoc(counterRef);
                 if (docSnap.exists()) {
                     const count = docSnap.data().count;
                     visitCountSpan.textContent = count.toLocaleString('vi-VN');
                 } else {
+                    console.error("Counter document ('counters/visits') does not exist in Firestore!");
                     visitCountSpan.textContent = "N/A";
                 }
+                
+                // Show the pop-up with a delay for a smooth entrance
                 setTimeout(() => {
                     visitorCounterPopup.classList.add('show');
                 }, 500);
@@ -310,7 +342,6 @@
             }
         }
         
-        // CÁC HÀM KHÁC (renderPortfolio, modals, v.v...)
         function getYoutubeVideoId(url) {
             let videoId = '';
             const youtubeRegex = /^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
@@ -341,142 +372,69 @@
             });
         }
         
-        function openVideoModal(videoUrl) { /* ... */ }
-        function closeVideoModal() { /* ... */ }
-        function openPdfModal(pdfUrl, skillName) { /* ... */ }
-        function closePdfModal() { /* ... */ }
-        function openProjectDetailModal(project) { /* ... */ }
-        function closeProjectDetailModal() { /* ... */ }
-
-        // BỔ SUNG: LOGIC CHO RATING & COMMENT
-        async function displayRatingSummary() {
-            const ratingRef = doc(db, "counters", "rating_summary");
-            try {
-                const docSnap = await getDoc(ratingRef);
-                if (docSnap.exists()) {
-                    const data = docSnap.data();
-                    const totalRatings = data.total_ratings || 0;
-                    const totalScore = data.total_score || 0;
-                    const average = totalRatings > 0 ? (totalScore / totalRatings) : 0;
-                    
-                    averageRatingSpan.textContent = average.toFixed(1);
-                    totalRatingsSpan.textContent = totalRatings.toLocaleString('vi-VN');
-                    
-                    ratingDisplay.innerHTML = '';
-                    for (let i = 1; i <= 5; i++) {
-                        const star = document.createElement('span');
-                        star.innerHTML = i <= Math.round(average) ? '&#9733;' : '&#9734;';
-                        if (i <= Math.round(average)) star.classList.add('text-amber-400');
-                        ratingDisplay.appendChild(star);
-                    }
-                }
-            } catch (error) { console.error("Error fetching rating summary:", error); }
+        function openVideoModal(videoUrl) {
+            const videoId = getYoutubeVideoId(videoUrl);
+            if (!videoId) return;
+            videoIframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
+            videoModalOverlay.classList.remove('opacity-0', 'pointer-events-none');
+            videoModalContent.classList.remove('opacity-0', 'scale-95');
+        }
+        function closeVideoModal() {
+            videoModalOverlay.classList.add('opacity-0', 'pointer-events-none');
+            videoModalContent.classList.add('opacity-0', 'scale-95');
+            setTimeout(() => { videoIframe.src = ''; }, 300);
+        }
+        
+        function openPdfModal(pdfUrl, skillName) {
+            if (!pdfUrl || pdfUrl.trim() === '#' || pdfUrl.trim() === '') return;
+            pdfIframe.src = pdfUrl;
+            pdfModalTitle.textContent = skillName || 'Chứng chỉ';
+            pdfModalOverlay.classList.remove('opacity-0', 'pointer-events-none');
+            pdfModalContent.classList.remove('opacity-0', 'scale-95');
+        }
+        function closePdfModal() {
+            pdfModalOverlay.classList.add('opacity-0', 'pointer-events-none');
+            pdfModalContent.classList.add('opacity-0', 'scale-95');
+            setTimeout(() => { pdfIframe.src = ''; }, 300);
         }
 
-        ratingForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const formData = new FormData(ratingForm);
-            const selectedRating = formData.get('rating');
-            const commentText = formData.get('comment').trim();
-            let commenterName = formData.get('name').trim() || 'Ẩn danh';
-
-            if (!selectedRating) { alert('Vui lòng chọn số sao!'); return; }
-            if (!commentText) { alert('Vui lòng nhập bình luận!'); return; }
-
-            const newScore = parseInt(selectedRating, 10);
-            
-            try {
-                await addDoc(collection(db, "comments"), {
-                    name: commenterName,
-                    comment: commentText,
-                    rating: newScore,
-                    timestamp: Timestamp.fromDate(new Date()),
-                    approved: false
+        function openProjectDetailModal(project) {
+            if (!project) return;
+            projectDetailTitle.textContent = project.title;
+            projectDetailImage.src = project.url;
+            projectDetailDescription.textContent = project.description || 'Không có mô tả cho dự án này.';
+            projectDetailTech.innerHTML = '';
+            if (project.technologies) {
+                project.technologies.split(',').forEach(tech => {
+                    if (tech.trim() !== '') {
+                        const tag = document.createElement('span');
+                        tag.className = 'bg-teal-500/20 text-teal-300 text-xs font-medium px-2.5 py-1 rounded-full';
+                        tag.textContent = tech.trim();
+                        projectDetailTech.appendChild(tag);
+                    }
                 });
+            }
+            projectDetailModalOverlay.classList.remove('opacity-0', 'pointer-events-none');
+            projectDetailModalContent.classList.remove('opacity-0', 'scale-95');
+        }
+        function closeProjectDetailModal() {
+            projectDetailModalOverlay.classList.add('opacity-0', 'pointer-events-none');
+            projectDetailModalContent.classList.add('opacity-0', 'scale-95');
+        }
 
-                const ratingRef = doc(db, "counters", "rating_summary");
-                await runTransaction(db, async (transaction) => {
-                    const ratingDoc = await transaction.get(ratingRef);
-                    if (!ratingDoc.exists()) { throw "Document does not exist!"; }
-                    const newTotalScore = (ratingDoc.data().total_score || 0) + newScore;
-                    const newTotalRatings = (ratingDoc.data().total_ratings || 0) + 1;
-                    transaction.update(ratingRef, { total_score: newTotalScore, total_ratings: newTotalRatings });
-                });
-                
-                localStorage.setItem('hasVotedPortfolio', 'true');
-                closeRatingModal();
-                checkIfVoted();
-                await displayRatingSummary();
-
-            } catch (error) {
-                console.error("Submission failed: ", error);
-                alert("Đã có lỗi xảy ra. Vui lòng thử lại.");
+        portfolioGrid.addEventListener('click', (e) => {
+            const portfolioItem = e.target.closest('.portfolio-item');
+            if (!portfolioItem) return;
+            const projectId = portfolioItem.dataset.id;
+            const project = fetchedProjects.find(p => p.id === projectId);
+            if (!project) return;
+            if (project.category === 'video') {
+                openVideoModal(project.url);
+            } else {
+                openProjectDetailModal(project);
             }
         });
-
-        function openRatingModal() {
-            ratingModalOverlay.classList.remove('hidden');
-            setTimeout(() => ratingModalContent.classList.remove('scale-95', 'opacity-0'), 10);
-        }
-        function closeRatingModal() {
-            ratingModalContent.classList.add('scale-95', 'opacity-0');
-            setTimeout(() => ratingModalOverlay.classList.add('hidden'), 300);
-        }
-        
-        function checkIfVoted() {
-            if (localStorage.getItem('hasVotedPortfolio')) {
-                openRatingModalBtn.classList.add('hidden');
-                ratingThankYou.classList.remove('hidden');
-            }
-        }
-
-        async function fetchComments(loadMore = false) {
-            const commentsPerPage = 3;
-            let q;
-            const commentsRef = collection(db, "comments");
-
-            const baseQuery = [where("approved", "==", true), orderBy("timestamp", "desc")];
-
-            if (loadMore && lastVisibleComment) {
-                q = query(commentsRef, ...baseQuery, startAfter(lastVisibleComment), limit(commentsPerPage));
-            } else {
-                commentList.innerHTML = '<p class="text-gray-400 text-center">Đang tải bình luận...</p>';
-                q = query(commentsRef, ...baseQuery, limit(commentsPerPage));
-            }
-
-            const querySnapshot = await getDocs(q);
-            const docs = querySnapshot.docs;
-
-            if (!loadMore) {
-                commentList.innerHTML = '';
-                if (docs.length === 0) commentList.innerHTML = '<p class="text-gray-400 text-center">Chưa có bình luận nào.</p>';
-            }
-
-            docs.forEach(doc => {
-                const comment = doc.data();
-                const item = document.createElement('div');
-                item.className = 'bg-gray-700/50 p-5 rounded-lg';
-                item.innerHTML = `
-                    <div class="flex items-center mb-2">
-                        <h4 class="font-bold text-white mr-3">${comment.name}</h4>
-                        <div class="flex text-amber-400">
-                            ${'&#9733;'.repeat(comment.rating)}${'&#9734;'.repeat(5 - comment.rating)}
-                        </div>
-                    </div>
-                    <p class="text-gray-300 italic">"${comment.comment}"</p>
-                `;
-                commentList.appendChild(item);
-            });
-            
-            lastVisibleComment = docs[docs.length - 1];
-            loadMoreBtn.classList.toggle('hidden', docs.length < commentsPerPage);
-        }
-        
-
-        // --- EVENT LISTENERS ---
-        // Event Listeners có sẵn
-        portfolioGrid.addEventListener('click', (e) => { /* ... */ });
-        skillsContainer.addEventListener('click', (e) => { /* ... */ });
+        skillsContainer.addEventListener('click', (e) => { const skillItem = e.target.closest('.skill-item-clickable'); if (skillItem) { openPdfModal(skillItem.dataset.pdfUrl, skillItem.dataset.skillName); } });
         closeVideoModalButton.addEventListener('click', closeVideoModal);
         videoModalOverlay.addEventListener('click', (e) => { if (e.target === videoModalOverlay) closeVideoModal(); });
         closePdfModalButton.addEventListener('click', closePdfModal);
@@ -484,31 +442,63 @@
         closeProjectDetailModalButton.addEventListener('click', closeProjectDetailModal);
         projectDetailModalOverlay.addEventListener('click', (e) => { if (e.target === projectDetailModalOverlay) closeProjectDetailModal(); });
         
-        const filterButtons = document.querySelectorAll('.filter-btn');
-        filterButtons.forEach(button => { /* ... */ });
-        
-        // BỔ SUNG: Event Listeners cho Rating & Comment
-        openRatingModalBtn.addEventListener('click', openRatingModal);
-        closeRatingModalBtn.addEventListener('click', closeRatingModal);
-        ratingModalOverlay.addEventListener('click', (e) => e.target === ratingModalOverlay && closeRatingModal());
-        loadMoreBtn.addEventListener('click', () => fetchComments(true));
-
-
-        // --- LOGIC KHỞI TẠO ---
-        // Logic có sẵn
         onSnapshot(projectsCollectionRef, (snapshot) => { const projects = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })); renderPortfolio(projects); }, (error) => { console.error("Error fetching projects:", error); });
-        lucide.createIcons();
-        // (Mobile menu and navbar scroll logic here...)
-
-        // BỔ SUNG: Khởi tạo tất cả chức năng khi trang được tải
-        document.addEventListener('DOMContentLoaded', () => {
-            updateVisitorCount();
-            displayRatingSummary();
-            checkIfVoted();
-            fetchComments();
-            lucide.createIcons(); // Gọi lại để render icon trong các modal
+        
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        filterButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                filterButtons.forEach(btn => {
+                    btn.classList.remove('active', 'bg-teal-500', 'text-white');
+                    btn.classList.add('bg-gray-700', 'text-gray-300');
+                });
+                button.classList.add('active', 'bg-teal-500', 'text-white');
+                button.classList.remove('bg-gray-700', 'text-gray-300');
+                const filter = button.dataset.filter;
+                const items = portfolioGrid.querySelectorAll('.portfolio-item');
+                items.forEach(item => {
+                    if (filter === 'all' || item.dataset.category === filter) {
+                        item.classList.remove('hidden-item');
+                    } else {
+                        item.classList.add('hidden-item');
+                    }
+                });
+            });
         });
+        lucide.createIcons();
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        if (mobileMenuButton) {
+            const mobileMenuIcons = mobileMenuButton.querySelectorAll('svg');
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+                mobileMenuIcons.forEach(icon => icon.classList.toggle('hidden'));
+            });
+        }
+        document.querySelectorAll('a.nav-link').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                if(targetElement) {
+                    targetElement.scrollIntoView({ behavior: 'smooth' });
+                }
+                if(mobileMenu && !mobileMenu.classList.contains('hidden')) {
+                     mobileMenu.classList.add('hidden');
+                     mobileMenuButton.querySelectorAll('svg').forEach(icon => icon.classList.toggle('hidden'));
+                }
+            });
+        });
+        const navbar = document.getElementById('navbar');
+        window.onscroll = function() {
+            if (document.body.scrollTop > 50 || document.documentElement.scrollTop > 50) {
+                navbar.classList.add("bg-gray-900/80", "backdrop-blur-sm", "shadow-lg");
+            } else {
+                navbar.classList.remove("bg-gray-900/80", "backdrop-blur-sm", "shadow-lg");
+            }
+        };
 
+        // Initialize the visitor counter when the page loads
+        updateVisitorCount();
     </script>
 </body>
 </html>
