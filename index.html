@@ -17,8 +17,13 @@
         ::-webkit-scrollbar-thumb { background: #374151; border-radius: 10px; }
         .portfolio-item { transition: transform 0.3s ease, opacity 0.3s ease; cursor: pointer; }
         .portfolio-item.hidden-item { transform: scale(0.9); opacity: 0; display: none; }
-        #video-modal-overlay, #pdf-modal-overlay, #project-detail-modal-overlay { transition: opacity 0.3s ease-in-out; }
-        #video-modal-content, #pdf-modal-content, #project-detail-modal-content { transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out; }
+        /* CHANGED: Added new modal IDs to the style rules */
+        #video-modal-overlay, #pdf-modal-overlay, #project-detail-modal-overlay, #review-modal-overlay { 
+            transition: opacity 0.3s ease-in-out; 
+        }
+        #video-modal-content, #pdf-modal-content, #project-detail-modal-content, #review-modal-content { 
+            transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out; 
+        }
         .progress-ring__circle {
             transition: stroke-dashoffset 0.8s ease-out;
             transform: rotate(-90deg);
@@ -33,7 +38,6 @@
             transform: translateY(0);
             opacity: 1;
         }
-        /* -- NEW: Review Stars Styles -- */
         .rating { display: inline-flex; flex-direction: row-reverse; justify-content: center; }
         .rating > input { display: none; }
         .rating > label { position: relative; width: 1.1em; font-size: 2.5rem; color: #FFD700; cursor: pointer; }
@@ -79,7 +83,6 @@
             <a href="#contact" class="nav-link text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Liên hệ</a>
         </div></div>
     </nav>
-    
     <header id="hero" class="min-h-screen flex items-center bg-gray-900">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h1 class="text-4xl md:text-6xl font-extrabold text-white leading-tight mb-4">Chào bạn, tôi là <span class="text-teal-400">Hoàng Anh</span></h1>
@@ -102,7 +105,6 @@
                 </div>
             </div>
         </section>
-
         <section id="work" class="py-20 sm:py-32 bg-gray-800/30">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center"><h2 class="text-3xl font-bold text-white sm:text-4xl">Dự án nổi bật</h2><p class="mt-4 text-lg text-gray-400">Một vài sản phẩm tôi đã thực hiện.</p></div>
@@ -121,7 +123,6 @@
                 </div>
             </div>
         </section>
-
         <section id="skills" class="py-20 sm:py-32">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center">
@@ -214,43 +215,18 @@
         </section>
 
         <section id="reviews" class="py-20 sm:py-32 bg-gray-800/30">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
-                    <div>
-                        <h2 class="text-3xl font-bold text-white sm:text-4xl">Đánh giá & Nhận xét</h2>
-                        <p class="mt-4 text-lg text-gray-400">Hãy cho tôi biết cảm nhận của bạn về công việc của tôi nhé!</p>
-                        
-                        <form id="review-form" class="mt-8 space-y-6 bg-gray-900/50 p-8 rounded-lg">
-                            <div>
-                                <label for="reviewer-name" class="block text-sm font-medium text-gray-300">Tên của bạn</label>
-                                <input type="text" id="reviewer-name" name="name" required class="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-300 mb-2">Đánh giá của bạn</label>
-                                <div class="rating">
-                                    <input type="radio" id="star5" name="rating" value="5" required /><label for="star5" title="5 sao"></label>
-                                    <input type="radio" id="star4" name="rating" value="4" /><label for="star4" title="4 sao"></label>
-                                    <input type="radio" id="star3" name="rating" value="3" /><label for="star3" title="3 sao"></label>
-                                    <input type="radio" id="star2" name="rating" value="2" /><label for="star2" title="2 sao"></label>
-                                    <input type="radio" id="star1" name="rating" value="1" /><label for="star1" title="1 sao"></label>
-                                </div>
-                            </div>
-                            <div>
-                                <label for="reviewer-comment" class="block text-sm font-medium text-gray-300">Bình luận</label>
-                                <textarea id="reviewer-comment" name="comment" rows="4" required class="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500"></textarea>
-                            </div>
-                            <button type="submit" id="submit-review-btn" class="w-full bg-teal-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-teal-600 transition duration-300 flex items-center justify-center">
-                                Gửi đánh giá
-                            </button>
-                            <p id="review-form-status" class="text-center text-sm mt-4"></p>
-                        </form>
-                    </div>
-                    <div class="mt-10 lg:mt-0">
-                        <h3 class="text-2xl font-bold text-white mb-6">Mọi người nói gì</h3>
-                        <div id="reviews-list" class="space-y-6 max-h-[600px] overflow-y-auto pr-4">
-                           <p class="text-gray-400">Đang tải các đánh giá...</p>
-                        </div>
-                    </div>
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <h2 class="text-3xl font-bold text-white sm:text-4xl">Đánh giá & Nhận xét</h2>
+                <p class="mt-4 text-lg text-gray-400 max-w-2xl mx-auto">Mọi người nói gì về công việc của tôi. Mọi ý kiến đóng góp đều là nguồn động lực quý giá.</p>
+                
+                <div class="mt-8">
+                    <button id="open-review-modal-btn" class="bg-teal-500 text-white font-bold py-3 px-8 rounded-full hover:bg-teal-600 transition duration-300 text-lg disabled:bg-gray-500 disabled:cursor-not-allowed">
+                        Để lại đánh giá của bạn
+                    </button>
+                </div>
+
+                <div id="reviews-list" class="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-left">
+                   <p class="col-span-full text-gray-400">Đang tải các đánh giá...</p>
                 </div>
             </div>
         </section>
@@ -278,9 +254,7 @@
 
     <div id="video-modal-overlay" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-[51] opacity-0 pointer-events-none">
         <div id="video-modal-content" class="bg-black w-full max-w-4xl aspect-video rounded-lg shadow-2xl relative transform scale-95 opacity-0">
-            <button id="close-video-modal-button" class="absolute -top-3 -right-3 text-white bg-gray-800 rounded-full p-1 z-10">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-            </button>
+            <button id="close-video-modal-button" class="absolute -top-3 -right-3 text-white bg-gray-800 rounded-full p-1 z-10"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
             <iframe id="video-iframe" class="w-full h-full rounded-lg" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
         </div>
     </div>
@@ -288,9 +262,7 @@
         <div id="pdf-modal-content" class="bg-gray-700 w-full max-w-4xl h-[90vh] rounded-lg shadow-2xl relative transform scale-95 opacity-0 flex flex-col">
             <div class="flex justify-between items-center p-4 border-b border-gray-600 flex-shrink-0">
                 <h3 id="pdf-modal-title" class="text-xl font-semibold text-white">Chứng chỉ</h3>
-                <button id="close-pdf-modal-button" class="text-white bg-gray-800 rounded-full p-1 z-10">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                </button>
+                <button id="close-pdf-modal-button" class="text-white bg-gray-800 rounded-full p-1 z-10"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
             </div>
             <div class="flex-grow p-2">
                 <iframe id="pdf-iframe" class="w-full h-full rounded-b-lg" src="" frameborder="0"></iframe>
@@ -301,9 +273,7 @@
         <div id="project-detail-modal-content" class="bg-gray-800 w-full max-w-4xl max-h-[90vh] rounded-lg shadow-2xl relative transform scale-95 opacity-0 flex flex-col overflow-hidden">
             <div class="flex justify-between items-center p-4 border-b border-gray-700 flex-shrink-0">
                 <h3 id="project-detail-title" class="text-xl font-semibold text-white">Chi tiết Dự án</h3>
-                <button id="close-project-detail-modal-button" class="text-white bg-gray-900 rounded-full p-1 z-10">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                </button>
+                <button id="close-project-detail-modal-button" class="text-white bg-gray-900 rounded-full p-1 z-10"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
             </div>
             <div class="flex-grow overflow-y-auto">
                 <img id="project-detail-image" src="" alt="Project Image" class="w-full h-auto object-cover" loading="lazy">
@@ -314,6 +284,41 @@
             </div>
         </div>
     </div>
+    
+    <div id="review-modal-overlay" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-[51] opacity-0 pointer-events-none p-4">
+        <div id="review-modal-content" class="bg-gray-800 w-full max-w-lg rounded-lg shadow-2xl relative transform scale-95 opacity-0 flex flex-col">
+            <div class="flex justify-between items-center p-4 border-b border-gray-700">
+                <h3 class="text-xl font-semibold text-white">Gửi đánh giá của bạn</h3>
+                <button id="close-review-modal-btn" class="text-white bg-gray-900 rounded-full p-1 z-10"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+            </div>
+            <div class="p-6">
+                <form id="review-form" class="space-y-6">
+                    <div>
+                        <label for="reviewer-name" class="block text-sm font-medium text-gray-300">Tên của bạn</label>
+                        <input type="text" id="reviewer-name" name="name" required class="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Đánh giá của bạn</label>
+                        <div class="rating">
+                            <input type="radio" id="star5" name="rating" value="5" required /><label for="star5" title="5 sao"></label>
+                            <input type="radio" id="star4" name="rating" value="4" /><label for="star4" title="4 sao"></label>
+                            <input type="radio" id="star3" name="rating" value="3" /><label for="star3" title="3 sao"></label>
+                            <input type="radio" id="star2" name="rating" value="2" /><label for="star2" title="2 sao"></label>
+                            <input type="radio" id="star1" name="rating" value="1" /><label for="star1" title="1 sao"></label>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="reviewer-comment" class="block text-sm font-medium text-gray-300">Bình luận</label>
+                        <textarea id="reviewer-comment" name="comment" rows="4" required class="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500"></textarea>
+                    </div>
+                    <button type="submit" id="submit-review-btn" class="w-full bg-teal-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-teal-600 transition duration-300 flex items-center justify-center">
+                        Gửi đánh giá
+                    </button>
+                    <p id="review-form-status" class="text-center text-sm mt-4 font-semibold"></p>
+                </form>
+            </div>
+        </div>
+    </div>
 
     <div id="visitor-counter" class="fixed bottom-5 left-5 bg-gray-800/80 backdrop-blur-sm text-white py-2 px-4 rounded-lg shadow-lg flex items-center space-x-2 z-40">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
@@ -321,11 +326,10 @@
     </div>
 
     <script type="module">
-        // Import existing and new references/functions from firebase-config
         import { db, projectsCollectionRef, reviewsCollectionRef } from './firebase-config.js';
-        import { onSnapshot, doc, getDoc, updateDoc, increment, addDoc, serverTimestamp, query, orderBy } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { onSnapshot, doc, getDoc, updateDoc, increment, addDoc, serverTimestamp, query, orderBy, where } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // Existing Element References
+        // --- ALL ELEMENT REFERENCES ---
         const portfolioGrid = document.getElementById('portfolio-grid');
         const videoModalOverlay = document.getElementById('video-modal-overlay');
         const videoModalContent = document.getElementById('video-modal-content');
@@ -345,13 +349,10 @@
         const projectDetailTech = document.getElementById('project-detail-tech');
         const projectDetailDescription = document.getElementById('project-detail-description');
         
-        let fetchedProjects = [];
-
         // --- VISITOR COUNTER LOGIC ---
         const visitorCounterPopup = document.getElementById('visitor-counter');
         const visitCountSpan = document.getElementById('visit-count');
         const counterRef = doc(db, "counters", "visits");
-
         async function updateVisitorCount() {
             try {
                 const hasVisited = sessionStorage.getItem('hasVisitedPortfolio');
@@ -374,13 +375,36 @@
             }
         }
 
-        // --- NEW: REVIEW SUBMISSION AND DISPLAY LOGIC ---
+        // --- REVIEW MODAL AND SUBMISSION LOGIC ---
+        let fetchedProjects = [];
         const reviewForm = document.getElementById('review-form');
         const reviewsList = document.getElementById('reviews-list');
         const reviewFormStatus = document.getElementById('review-form-status');
         const submitReviewBtn = document.getElementById('submit-review-btn');
+        // NEW: Review modal elements
+        const openReviewModalBtn = document.getElementById('open-review-modal-btn');
+        const reviewModalOverlay = document.getElementById('review-modal-overlay');
+        const reviewModalContent = document.getElementById('review-modal-content');
+        const closeReviewModalBtn = document.getElementById('close-review-modal-btn');
 
-        // Function to handle review form submission
+        // NEW: Functions to control the review modal
+        function openReviewModal() {
+            reviewModalOverlay.classList.remove('opacity-0', 'pointer-events-none');
+            reviewModalContent.classList.remove('opacity-0', 'scale-95');
+        }
+        function closeReviewModal() {
+            reviewModalOverlay.classList.add('opacity-0', 'pointer-events-none');
+            reviewModalContent.classList.add('opacity-0', 'scale-95');
+        }
+
+        // CHANGED: This function now controls the "open modal" button
+        function setupReviewButton() {
+            if (localStorage.getItem('hasSubmittedReview') === 'true') {
+                openReviewModalBtn.disabled = true;
+                openReviewModalBtn.textContent = 'Cảm ơn, bạn đã gửi đánh giá!';
+            }
+        }
+
         async function handleReviewSubmit(e) {
             e.preventDefault();
             submitReviewBtn.disabled = true;
@@ -392,7 +416,7 @@
 
             if (!name || !rating || !comment) {
                 reviewFormStatus.textContent = 'Vui lòng điền đầy đủ thông tin.';
-                reviewFormStatus.style.color = '#F87171'; // red-400
+                reviewFormStatus.style.color = '#F87171';
                 submitReviewBtn.disabled = false;
                 submitReviewBtn.textContent = 'Gửi đánh giá';
                 return;
@@ -403,68 +427,70 @@
                     name: name,
                     rating: parseInt(rating, 10),
                     comment: comment,
-                    timestamp: serverTimestamp()
+                    timestamp: serverTimestamp(),
+                    approved: false 
                 });
+                
+                localStorage.setItem('hasSubmittedReview', 'true');
                 reviewForm.reset();
-                reviewFormStatus.textContent = 'Cảm ơn bạn đã gửi đánh giá!';
-                reviewFormStatus.style.color = '#34D399'; // green-400
+                setupReviewButton(); // Update the button state
+                
+                // Show success message and close modal after a delay
+                reviewFormStatus.textContent = 'Gửi thành công! Đánh giá của bạn đang chờ duyệt.';
+                reviewFormStatus.style.color = '#34D399';
+                setTimeout(() => {
+                    closeReviewModal();
+                    reviewFormStatus.textContent = ''; // Clear status
+                    submitReviewBtn.disabled = false;
+                    submitReviewBtn.textContent = 'Gửi đánh giá';
+                }, 2000);
+
             } catch (error) {
                 console.error("Error adding review: ", error);
                 reviewFormStatus.textContent = 'Đã xảy ra lỗi. Vui lòng thử lại.';
-                reviewFormStatus.style.color = '#F87171'; // red-400
-            } finally {
-                setTimeout(() => {
-                    submitReviewBtn.disabled = false;
-                    submitReviewBtn.textContent = 'Gửi đánh giá';
-                    reviewFormStatus.textContent = '';
-                }, 3000);
+                reviewFormStatus.style.color = '#F87171';
+                submitReviewBtn.disabled = false;
+                submitReviewBtn.textContent = 'Gửi đánh giá';
             }
         }
 
-        // Function to render stars based on rating
         function renderStars(rating) {
             let starsHtml = '';
             for (let i = 0; i < 5; i++) {
-                if (i < rating) {
-                    starsHtml += `<svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>`;
-                } else {
-                    starsHtml += `<svg class="w-5 h-5 text-gray-500" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>`;
-                }
+                starsHtml += `<svg class="w-5 h-5 ${i < rating ? 'text-yellow-400' : 'text-gray-500'}" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>`;
             }
             return `<div class="flex items-center">${starsHtml}</div>`;
         }
 
-        // Listen for real-time updates on reviews
-        const reviewsQuery = query(reviewsCollectionRef, orderBy('timestamp', 'desc'));
+        const reviewsQuery = query(reviewsCollectionRef, where("approved", "==", true), orderBy('timestamp', 'desc'));
         onSnapshot(reviewsQuery, (snapshot) => {
             reviewsList.innerHTML = '';
             if (snapshot.empty) {
-                reviewsList.innerHTML = '<p class="text-gray-400">Chưa có đánh giá nào. Hãy là người đầu tiên!</p>';
+                reviewsList.innerHTML = '<p class="col-span-full text-gray-400">Chưa có đánh giá nào được hiển thị.</p>';
                 return;
             }
             snapshot.forEach(doc => {
                 const review = doc.data();
                 const reviewElement = document.createElement('div');
-                reviewElement.className = 'bg-gray-800 p-4 rounded-lg';
+                // CHANGED: Display each review in its own card
+                reviewElement.className = 'bg-gray-800 p-6 rounded-lg text-left';
                 const reviewDate = review.timestamp ? review.timestamp.toDate().toLocaleDateString('vi-VN') : '';
                 
                 reviewElement.innerHTML = `
                     <div class="flex justify-between items-start">
                         <div>
-                            <h4 class="font-bold text-white">${review.name}</h4>
-                            <p class="text-xs text-gray-500">${reviewDate}</p>
+                            <h4 class="font-bold text-white text-lg">${review.name}</h4>
+                            <p class="text-xs text-gray-500 mt-1">${reviewDate}</p>
                         </div>
                         ${renderStars(review.rating)}
                     </div>
-                    <p class="mt-3 text-gray-300">${review.comment}</p>
+                    <p class="mt-4 text-gray-300 italic">"${review.comment}"</p>
                 `;
                 reviewsList.appendChild(reviewElement);
             });
         });
 
-        reviewForm.addEventListener('submit', handleReviewSubmit);
-
-        // --- EXISTING PORTFOLIO AND MODAL LOGIC ---
+        // --- EXISTING PORTFOLIO AND OTHER MODAL LOGIC (No changes below this line) ---
         function getYoutubeVideoId(url) {
             let videoId = '';
             const youtubeRegex = /^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
@@ -472,7 +498,6 @@
             if (match) { videoId = match[1]; }
             return videoId;
         }
-
         function renderPortfolio(projects) {
             fetchedProjects = projects;
             if (!portfolioGrid) return;
@@ -494,7 +519,6 @@
                 portfolioGrid.appendChild(item);
             });
         }
-        
         function openVideoModal(videoUrl) {
             const videoId = getYoutubeVideoId(videoUrl);
             if (!videoId) return;
@@ -507,7 +531,6 @@
             videoModalContent.classList.add('opacity-0', 'scale-95');
             setTimeout(() => { videoIframe.src = ''; }, 300);
         }
-        
         function openPdfModal(pdfUrl, skillName) {
             if (!pdfUrl || pdfUrl.trim() === '#' || pdfUrl.trim() === '') return;
             pdfIframe.src = pdfUrl;
@@ -520,7 +543,6 @@
             pdfModalContent.classList.add('opacity-0', 'scale-95');
             setTimeout(() => { pdfIframe.src = ''; }, 300);
         }
-
         function openProjectDetailModal(project) {
             if (!project) return;
             projectDetailTitle.textContent = project.title;
@@ -545,7 +567,14 @@
             projectDetailModalContent.classList.add('opacity-0', 'scale-95');
         }
 
-        // --- EXISTING EVENT LISTENERS AND INITIALIZATIONS ---
+        // --- ALL EVENT LISTENERS ---
+        // Review Modal listeners
+        openReviewModalBtn.addEventListener('click', openReviewModal);
+        closeReviewModalBtn.addEventListener('click', closeReviewModal);
+        reviewModalOverlay.addEventListener('click', (e) => { if(e.target === reviewModalOverlay) closeReviewModal(); });
+        reviewForm.addEventListener('submit', handleReviewSubmit);
+        
+        // Other listeners
         portfolioGrid.addEventListener('click', (e) => {
             const portfolioItem = e.target.closest('.portfolio-item');
             if (!portfolioItem) return;
@@ -565,9 +594,7 @@
         pdfModalOverlay.addEventListener('click', (e) => { if (e.target === pdfModalOverlay) closePdfModal(); });
         closeProjectDetailModalButton.addEventListener('click', closeProjectDetailModal);
         projectDetailModalOverlay.addEventListener('click', (e) => { if (e.target === projectDetailModalOverlay) closeProjectDetailModal(); });
-        
         onSnapshot(projectsCollectionRef, (snapshot) => { const projects = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })); renderPortfolio(projects); }, (error) => { console.error("Error fetching projects:", error); });
-        
         const filterButtons = document.querySelectorAll('.filter-btn');
         filterButtons.forEach(button => {
             button.addEventListener('click', () => {
@@ -621,7 +648,9 @@
             }
         };
 
+        // --- INITIALIZE PAGE ---
         updateVisitorCount();
+        setupReviewButton(); 
     </script>
 </body>
 </html>
