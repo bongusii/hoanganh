@@ -24,6 +24,16 @@
             transform: rotate(-90deg);
             transform-origin: 50% 50%;
         }
+        /* Visitor Counter Pop-up Styles */
+        #visitor-counter {
+            transform: translateY(100px);
+            transition: transform 0.8s ease-in-out, opacity 0.5s ease-in-out;
+            opacity: 0;
+        }
+        #visitor-counter.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
     </style>
 </head>
 <body class="bg-gray-900 text-gray-200 antialiased">
@@ -73,7 +83,7 @@
         <section id="about" class="py-20 sm:py-32">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="lg:grid lg:grid-cols-3 lg:gap-8 items-center">
-                    <div class="lg:col-span-1"><img class="rounded-lg shadow-2xl object-cover h-96 w-full lg:h-auto" src="https://github.com/bongusii/hoanganh/blob/main/BONGUSI.jpg?raw=true" alt="Ảnh chân dung của bạn"></div>
+                    <div class="lg:col-span-1"><img class="rounded-lg shadow-2xl object-cover h-96 w-full lg:h-auto" src="https://github.com/bongusii/hoanganh/blob/main/BONGUSI.jpg?raw=true" alt="Ảnh chân dung của bạn" loading="lazy"></div>
                     <div class="mt-12 lg:mt-0 lg:col-span-2">
                         <h2 class="text-3xl font-bold text-white sm:text-4xl mb-6">Về tôi</h2>
                         <p class="text-lg text-gray-300 mb-4">Xin chào! Tôi là một người đam mê sáng tạo với nền tảng vững chắc về công nghệ và nghệ thuật. Với kinh nghiệm trong lĩnh vực lập trình giao diện người dùng (UI), tôi tập trung vào việc xây dựng các trang web và ứng dụng không chỉ mạnh mẽ về mặt chức năng mà còn tinh tế về mặt thẩm mỹ.</p>
@@ -205,12 +215,12 @@
             <div class="max-w-3xl mx-auto text-center px-4 sm:px-6 lg:px-8">
                 <h2 class="text-3xl font-bold text-white sm:text-4xl">Cùng hợp tác nhé!</h2>
                 <p class="mt-4 text-lg text-gray-400">Tôi luôn sẵn sàng lắng nghe những ý tưởng mới và tham gia vào các dự án thú vị. Hãy liên hệ với tôi qua email hoặc các mạng xã hội bên dưới.</p>
-                <p class="mt-4 text-lg text-gray-400">Hoặc qua Zalo: 0876.901.339</p>
+                <p class="mt-4 text-lg text-gray-400">Hoặc qua số điện thoại: 0982.062.971</p>
                 <div class="mt-8"><a href="mailto:bongusi9124@gmail.com" class="bg-teal-500 text-white font-bold py-3 px-8 rounded-full hover:bg-teal-600 transition duration-300 text-lg">Gửi Email</a></div>
                 <div class="mt-10 flex justify-center space-x-6">
-                    <a href="https://github.com/bongusii" class="text-gray-400 hover:text-white"><span class="sr-only">GitHub</span><i data-lucide="github" class="w-6 h-6"></i></a>
-                    <a href="https://www.instagram.com/bongusi.9124" class="text-gray-400 hover:text-white"><span class="sr-only">Instagram</span><i data-lucide="instagram" class="w-6 h-6"></i></a>
-                    <a href="https://www.youtube.com/@bongusiii" class="text-gray-400 hover:text-white"><span class="sr-only">YouTube</span><i data-lucide="youtube" class="w-6 h-6"></i></a>
+                    <a href="https://github.com/bongusii" class="text-gray-400 hover:text-white" aria-label="My GitHub Profile"><span class="sr-only">GitHub</span><i data-lucide="github" class="w-6 h-6"></i></a>
+                    <a href="https://www.instagram.com/bongusi.9124" class="text-gray-400 hover:text-white" aria-label="My Instagram Profile"><span class="sr-only">Instagram</span><i data-lucide="instagram" class="w-6 h-6"></i></a>
+                    <a href="https://www.youtube.com/@bongusiii" class="text-gray-400 hover:text-white" aria-label="My YouTube Channel"><span class="sr-only">YouTube</span><i data-lucide="youtube" class="w-6 h-6"></i></a>
                 </div>
             </div>
         </section>
@@ -254,7 +264,7 @@
                 </button>
             </div>
             <div class="flex-grow overflow-y-auto">
-                <img id="project-detail-image" src="" alt="Project Image" class="w-full h-auto object-cover">
+                <img id="project-detail-image" src="" alt="Project Image" class="w-full h-auto object-cover" loading="lazy">
                 <div class="p-6">
                     <div id="project-detail-tech" class="flex flex-wrap gap-2 mb-4">
                     </div>
@@ -264,9 +274,16 @@
         </div>
     </div>
 
+    <div id="visitor-counter" class="fixed bottom-5 left-5 bg-gray-800/80 backdrop-blur-sm text-white py-2 px-4 rounded-lg shadow-lg flex items-center space-x-2 z-40">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <p class="text-sm">Lượt truy cập: <span id="visit-count" class="font-bold">...</span></p>
+    </div>
+
     <script type="module">
         import { db, projectsCollectionRef } from './firebase-config.js';
         import { onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        // Import Firestore functions for counter
+        import { doc, getDoc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         const portfolioGrid = document.getElementById('portfolio-grid');
         const videoModalOverlay = document.getElementById('video-modal-overlay');
@@ -289,6 +306,42 @@
         
         let fetchedProjects = [];
 
+        // --- VISITOR COUNTER LOGIC ---
+        const visitorCounterPopup = document.getElementById('visitor-counter');
+        const visitCountSpan = document.getElementById('visit-count');
+        const counterRef = doc(db, "counters", "visits");
+
+        async function updateVisitorCount() {
+            try {
+                const hasVisited = sessionStorage.getItem('hasVisitedPortfolio');
+
+                // Only increment if the user hasn't visited in this session
+                if (!hasVisited) {
+                    await updateDoc(counterRef, { count: increment(1) });
+                    sessionStorage.setItem('hasVisitedPortfolio', 'true');
+                }
+
+                // Get the latest count and display it
+                const docSnap = await getDoc(counterRef);
+                if (docSnap.exists()) {
+                    const count = docSnap.data().count;
+                    visitCountSpan.textContent = count.toLocaleString('vi-VN');
+                } else {
+                    console.error("Counter document ('counters/visits') does not exist in Firestore!");
+                    visitCountSpan.textContent = "N/A";
+                }
+                
+                // Show the pop-up with a delay for a smooth entrance
+                setTimeout(() => {
+                    visitorCounterPopup.classList.add('show');
+                }, 500);
+            } catch (error) {
+                console.error("Error updating visitor count:", error);
+                visitCountSpan.textContent = "Lỗi";
+                visitorCounterPopup.classList.add('show');
+            }
+        }
+        
         function getYoutubeVideoId(url) {
             let videoId = '';
             const youtubeRegex = /^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
@@ -314,7 +367,7 @@
                 let imageUrl, playIconOverlay = '';
                 if (project.thumbnailUrl && project.thumbnailUrl.trim() !== '') { imageUrl = project.thumbnailUrl; } else if (project.category === 'video') { const videoId = getYoutubeVideoId(project.url); imageUrl = videoId ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg` : project.url; } else { imageUrl = project.url; }
                 if (project.category === 'video') { playIconOverlay = `<div class="absolute inset-0 bg-black bg-opacity-20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"><svg class="w-16 h-16 text-white opacity-80" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div>`; }
-                item.innerHTML = `<img src="${imageUrl}" alt="${project.title}" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1f2937/34d399?text=Image+Error';"><div class="absolute inset-0 bg-black bg-opacity-60 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center p-4"><div class="text-center"><h3 class="text-xl font-bold text-white">${project.title}</h3><p class="text-sm text-gray-300 mt-1">${categoryMap[project.category] || 'Chung'}</p></div></div>${playIconOverlay}`;
+                item.innerHTML = `<img src="${imageUrl}" alt="${project.title}" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500" loading="lazy" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1f2937/34d399?text=Image+Error';"><div class="absolute inset-0 bg-black bg-opacity-60 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center p-4"><div class="text-center"><h3 class="text-xl font-bold text-white">${project.title}</h3><p class="text-sm text-gray-300 mt-1">${categoryMap[project.category] || 'Chung'}</p></div></div>${playIconOverlay}`;
                 portfolioGrid.appendChild(item);
             });
         }
@@ -388,7 +441,9 @@
         pdfModalOverlay.addEventListener('click', (e) => { if (e.target === pdfModalOverlay) closePdfModal(); });
         closeProjectDetailModalButton.addEventListener('click', closeProjectDetailModal);
         projectDetailModalOverlay.addEventListener('click', (e) => { if (e.target === projectDetailModalOverlay) closeProjectDetailModal(); });
+        
         onSnapshot(projectsCollectionRef, (snapshot) => { const projects = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })); renderPortfolio(projects); }, (error) => { console.error("Error fetching projects:", error); });
+        
         const filterButtons = document.querySelectorAll('.filter-btn');
         filterButtons.forEach(button => {
             button.addEventListener('click', () => {
@@ -441,7 +496,9 @@
                 navbar.classList.remove("bg-gray-900/80", "backdrop-blur-sm", "shadow-lg");
             }
         };
+
+        // Initialize the visitor counter when the page loads
+        updateVisitorCount();
     </script>
 </body>
 </html>
-
