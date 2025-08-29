@@ -68,17 +68,17 @@
                     </form>
                 </div>
 
-                <div class="mb-12">
+                <div class="bg-gray-900 p-8 rounded-lg shadow-lg mb-8">
                     <h2 class="text-2xl font-bold text-white mb-6">Danh sách dự án</h2>
                     <div id="admin-project-list" class="space-y-4">
                          <p class="text-gray-400">Đang tải danh sách...</p>
                     </div>
                 </div>
 
-                <div>
-                    <h2 class="text-2xl font-bold text-white mb-6">Duyệt Bình luận</h2>
-                    <div id="comment-moderation-list" class="space-y-4">
-                        <p class="text-gray-400">Đang tải các bình luận chờ duyệt...</p>
+                <div class="bg-gray-900 p-8 rounded-lg shadow-lg">
+                    <h2 class="text-2xl font-bold text-white mb-6">Quản lý Đánh giá</h2>
+                    <div id="admin-review-list" class="space-y-4">
+                         <p class="text-gray-400">Đang tải danh sách đánh giá...</p>
                     </div>
                 </div>
             </div>
@@ -88,25 +88,24 @@
     <div id="toast" class="fixed bottom-5 right-5 bg-gray-800 text-white py-2 px-4 rounded-lg shadow-lg transition-opacity duration-300 opacity-0"><p id="toast-message"></p></div>
 
     <script type="module">
-        import { db, auth, projectsCollectionRef } from './firebase-config.js';
+        import { db, auth, projectsCollectionRef, reviewsCollectionRef } from './firebase-config.js';
         import { onAuthStateChanged, signInAnonymously, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { 
-            onSnapshot, addDoc, deleteDoc, doc, updateDoc, 
-            collection, query, where 
-        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { onSnapshot, addDoc, deleteDoc, doc, query, orderBy } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // UI Elements
+        const addProjectForm = document.getElementById('add-project-form');
         const authContainer = document.getElementById('auth-container');
         const adminPanel = document.getElementById('admin-panel');
         const logoutButton = document.getElementById('logout-button');
-        const addProjectForm = document.getElementById('add-project-form');
         const adminProjectList = document.getElementById('admin-project-list');
         const projectCategorySelect = document.getElementById('project-category');
         const urlLabel = document.getElementById('url-label');
         const projectUrlInput = document.getElementById('project-url');
         const toast = document.getElementById('toast');
         const toastMessage = document.getElementById('toast-message');
-        const commentModerationList = document.getElementById('comment-moderation-list');
+        
+        // NEW: Review list element
+        const adminReviewList = document.getElementById('admin-review-list');
 
         function showToast(message, isError = false) {
             toastMessage.textContent = message;
@@ -115,23 +114,7 @@
             setTimeout(() => { toast.classList.add('opacity-0'); }, 3000);
         }
 
-        // --- AUTH LOGIC ---
-        onAuthStateChanged(auth, user => {
-            if (user) {
-                authContainer.style.display = 'none';
-                adminPanel.classList.remove('hidden');
-            } else {
-                adminPanel.classList.add('hidden');
-                authContainer.style.display = 'block';
-                signInAnonymously(auth).catch(error => {
-                    console.error("Lỗi đăng nhập:", error);
-                    document.getElementById('auth-status').textContent = `Lỗi xác thực.`;
-                });
-            }
-        });
-        logoutButton.addEventListener('click', () => signOut(auth));
-
-        // --- PROJECT MANAGEMENT LOGIC ---
+        // --- PROJECT MANAGEMENT ---
         addProjectForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const title = document.getElementById('project-title').value;
@@ -151,46 +134,6 @@
             }
         });
 
-        onSnapshot(projectsCollectionRef, (snapshot) => {
-            renderAdminList(snapshot.docs);
-        });
-
-        function renderAdminList(projects) {
-             adminProjectList.innerHTML = '';
-             if (projects.length === 0) {
-                 adminProjectList.innerHTML = `<p class="text-gray-400">Chưa có dự án nào.</p>`;
-                 return;
-             }
-             projects.forEach(projectDoc => {
-                 const project = projectDoc.data();
-                 const item = document.createElement('div');
-                 item.className = 'bg-gray-700 p-4 rounded-lg flex items-center justify-between';
-                 item.innerHTML = `
-                    <div>
-                        <h3 class="font-bold text-white">${project.title}</h3>
-                        <p class="text-sm text-gray-400 uppercase">${project.category}</p>
-                    </div>
-                    <button data-id="${projectDoc.id}" class="delete-project-btn bg-red-600 hover:bg-red-700 text-white font-bold py-1 px-3 rounded-md transition duration-300">Xóa</button>
-                 `;
-                 adminProjectList.appendChild(item);
-             });
-        }
-        
-        adminProjectList.addEventListener('click', async (e) => {
-            if (e.target.classList.contains('delete-project-btn')) {
-                const id = e.target.dataset.id;
-                if (confirm('Bạn có chắc chắn muốn xóa dự án này?')) {
-                    try {
-                        await deleteDoc(doc(db, "projects", id));
-                        showToast('Xóa dự án thành công!');
-                    } catch (error) {
-                        console.error("Lỗi xóa dự án: ", error);
-                        showToast('Có lỗi xảy ra, không thể xóa dự án.', true);
-                    }
-                }
-            }
-        });
-
         function updateUrlField() {
             const selectedCategory = projectCategorySelect.value;
             if (selectedCategory === 'video') {
@@ -201,77 +144,112 @@
                 projectUrlInput.placeholder = 'https://example.com/image.jpg';
             }
         }
-        projectCategorySelect.addEventListener('change', updateUrlField);
-        updateUrlField();
+        
+        function renderAdminProjectList(projects) {
+             adminProjectList.innerHTML = '';
+             if (projects.length === 0) {
+                 adminProjectList.innerHTML = `<p class="text-gray-400">Chưa có dự án nào.</p>`;
+                 return;
+             }
+             projects.forEach(project => {
+                 const item = document.createElement('div');
+                 item.className = 'bg-gray-700 p-4 rounded-lg flex items-center justify-between';
+                 item.innerHTML = `
+                    <div>
+                        <h3 class="font-bold text-white">${project.title}</h3>
+                        <p class="text-sm text-gray-400 uppercase">${project.category}</p>
+                    </div>
+                    <button data-id="${project.id}" class="delete-project-btn bg-red-600 hover:bg-red-700 text-white font-bold py-1 px-3 rounded-md transition duration-300">Xóa</button>
+                 `;
+                 adminProjectList.appendChild(item);
+             });
+        }
 
-        // --- COMMENT MODERATION LOGIC ---
-        const commentsCollectionRef = collection(db, "comments");
-        const unapprovedCommentsQuery = query(commentsCollectionRef, where("approved", "==", false));
-        onSnapshot(unapprovedCommentsQuery, (snapshot) => {
-            renderCommentModerationList(snapshot.docs);
-        });
-
-        function renderCommentModerationList(commentDocs) {
-            commentModerationList.innerHTML = '';
-            if (commentDocs.length === 0) {
-                commentModerationList.innerHTML = `<p class="text-gray-400">Không có bình luận nào chờ duyệt.</p>`;
+        // --- NEW: REVIEW MANAGEMENT ---
+        function renderAdminReviewList(reviews) {
+            adminReviewList.innerHTML = '';
+            if (reviews.length === 0) {
+                adminReviewList.innerHTML = `<p class="text-gray-400">Chưa có đánh giá nào.</p>`;
                 return;
             }
-
-            commentDocs.forEach(commentDoc => {
-                const comment = commentDoc.data();
+            reviews.forEach(review => {
                 const item = document.createElement('div');
-                item.className = 'bg-gray-700 p-4 rounded-lg';
+                item.className = 'bg-gray-700 p-4 rounded-lg flex items-start justify-between';
                 item.innerHTML = `
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <div class="flex items-center mb-2">
-                                <h3 class="font-bold text-white mr-2">${comment.name}</h3>
-                                <div class="flex text-amber-400">
-                                    ${'&#9733;'.repeat(comment.rating)}${'&#9734;'.repeat(5 - comment.rating)}
-                                </div>
-                            </div>
-                            <p class="text-gray-300 italic">"${comment.comment}"</p>
-                            <p class="text-xs text-gray-500 mt-2">
-                                ${new Date(comment.timestamp.seconds * 1000).toLocaleString('vi-VN')}
-                            </p>
+                    <div class="flex-1 mr-4">
+                        <div class="flex items-center mb-1">
+                           <h3 class="font-bold text-white mr-2">${review.name}</h3>
+                           <span class="text-yellow-400 text-sm">(${review.rating} ★)</span>
                         </div>
-                        <div class="flex space-x-2 flex-shrink-0 ml-4">
-                            <button data-id="${commentDoc.id}" class="approve-btn bg-green-600 hover:bg-green-700 text-white font-bold py-1 px-3 rounded-md">Duyệt</button>
-                            <button data-id="${commentDoc.id}" class="delete-comment-btn bg-red-600 hover:bg-red-700 text-white font-bold py-1 px-3 rounded-md">Xóa</button>
-                        </div>
+                        <p class="text-sm text-gray-300">${review.comment}</p>
                     </div>
+                    <button data-id="${review.id}" class="delete-review-btn bg-red-600 hover:bg-red-700 text-white font-bold py-1 px-3 rounded-md transition duration-300 flex-shrink-0">Xóa</button>
                 `;
-                commentModerationList.appendChild(item);
+                adminReviewList.appendChild(item);
             });
         }
 
-        commentModerationList.addEventListener('click', async (e) => {
-            const target = e.target;
-            const id = target.dataset.id;
-            if (!id) return;
+        // --- AUTHENTICATION AND LISTENERS ---
+        onAuthStateChanged(auth, user => {
+            if (user) {
+                authContainer.style.display = 'none';
+                adminPanel.classList.remove('hidden');
+            } else {
+                adminPanel.classList.add('hidden');
+                authContainer.style.display = 'block';
+                signInAnonymously(auth).catch(error => {
+                    console.error("Lỗi đăng nhập:", error);
+                    document.getElementById('auth-status').textContent = `Lỗi xác thực.`;
+                });
+            }
+        });
 
-            const commentDocRef = doc(db, "comments", id);
-            if (target.classList.contains('approve-btn')) {
-                try {
-                    await updateDoc(commentDocRef, { approved: true });
-                    showToast('Đã duyệt bình luận!');
-                } catch (error) {
-                    showToast('Lỗi khi duyệt.', true);
+        // Listen for project updates
+        onSnapshot(projectsCollectionRef, (snapshot) => {
+            const projects = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            renderAdminProjectList(projects);
+        });
+        
+        // NEW: Listen for review updates
+        const reviewsQuery = query(reviewsCollectionRef, orderBy('timestamp', 'desc'));
+        onSnapshot(reviewsQuery, (snapshot) => {
+            const reviews = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            renderAdminReviewList(reviews);
+        });
+
+        // Event delegation for delete buttons
+        adminPanel.addEventListener('click', async (e) => {
+            // Project delete logic
+            if (e.target.classList.contains('delete-project-btn')) {
+                const id = e.target.dataset.id;
+                if (confirm('Bạn có chắc chắn muốn xóa DỰ ÁN này?')) {
+                    try {
+                        await deleteDoc(doc(db, "projects", id));
+                        showToast('Xóa dự án thành công!');
+                    } catch (error) {
+                        console.error("Lỗi xóa dự án: ", error);
+                        showToast('Có lỗi xảy ra, không thể xóa dự án.', true);
+                    }
                 }
             }
-
-            if (target.classList.contains('delete-comment-btn')) {
-                if (confirm('Bạn có chắc chắn muốn xóa bình luận này vĩnh viễn?')) {
+            // NEW: Review delete logic
+            if (e.target.classList.contains('delete-review-btn')) {
+                const id = e.target.dataset.id;
+                if (confirm('Bạn có chắc chắn muốn xóa ĐÁNH GIÁ này?')) {
                     try {
-                        await deleteDoc(commentDocRef);
-                        showToast('Xóa bình luận thành công!');
+                        await deleteDoc(doc(db, "reviews", id));
+                        showToast('Xóa đánh giá thành công!');
                     } catch (error) {
-                        showToast('Lỗi khi xóa.', true);
+                        console.error("Lỗi xóa đánh giá: ", error);
+                        showToast('Có lỗi xảy ra, không thể xóa đánh giá.', true);
                     }
                 }
             }
         });
+        
+        projectCategorySelect.addEventListener('change', updateUrlField);
+        logoutButton.addEventListener('click', () => signOut(auth));
+        updateUrlField();
     </script>
 </body>
 </html>

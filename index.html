@@ -24,7 +24,6 @@
             transform: rotate(-90deg);
             transform-origin: 50% 50%;
         }
-        /* Visitor Counter Pop-up Styles */
         #visitor-counter {
             transform: translateY(100px);
             transition: transform 0.8s ease-in-out, opacity 0.5s ease-in-out;
@@ -34,6 +33,14 @@
             transform: translateY(0);
             opacity: 1;
         }
+        /* -- NEW: Review Stars Styles -- */
+        .rating { display: inline-flex; flex-direction: row-reverse; justify-content: center; }
+        .rating > input { display: none; }
+        .rating > label { position: relative; width: 1.1em; font-size: 2.5rem; color: #FFD700; cursor: pointer; }
+        .rating > label::before { content: "\2605"; position: absolute; opacity: 0.3; }
+        .rating > label:hover:before,
+        .rating > label:hover ~ label:before,
+        .rating > input:checked ~ label:before { opacity: 1; }
     </style>
 </head>
 <body class="bg-gray-900 text-gray-200 antialiased">
@@ -50,6 +57,7 @@
                         <a href="#about" class="nav-link text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Giới thiệu</a>
                         <a href="#work" class="nav-link text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Dự án</a>
                         <a href="#skills" class="nav-link text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Kỹ năng</a>
+                        <a href="#reviews" class="nav-link text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Đánh giá</a>
                         <a href="#contact" class="nav-link text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Liên hệ</a>
                     </div>
                 </div>
@@ -67,6 +75,7 @@
             <a href="#about" class="nav-link text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Giới thiệu</a>
             <a href="#work" class="nav-link text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Dự án</a>
             <a href="#skills" class="nav-link text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Kỹ năng</a>
+            <a href="#reviews" class="nav-link text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Đánh giá</a>
             <a href="#contact" class="nav-link text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Liên hệ</a>
         </div></div>
     </nav>
@@ -130,7 +139,6 @@
                         </div>
                         <h3 class="mt-4 text-lg font-semibold text-white">Adobe Illustrator</h3>
                     </div>
-
                     <div class="skill-item-clickable flex flex-col items-center text-center transform transition-transform duration-300 hover:scale-105 cursor-pointer" data-pdf-url="https://drive.google.com/file/d/180nKtCpot_b18NmOXI8TBpd1smStpHiR/preview" data-skill-name="Chứng chỉ Adobe Photoshop">
                         <div class="relative w-32 h-32">
                             <svg class="w-full h-full" viewBox="0 0 120 120">
@@ -141,7 +149,6 @@
                         </div>
                         <h3 class="mt-4 text-lg font-semibold text-white">Adobe Photoshop</h3>
                     </div>
-
                     <div class="skill-item-clickable flex flex-col items-center text-center transform transition-transform duration-300 hover:scale-105 cursor-pointer" data-pdf-url="#" data-skill-name="#">
                         <div class="relative w-32 h-32">
                             <svg class="w-full h-full" viewBox="0 0 120 120">
@@ -152,7 +159,6 @@
                         </div>
                         <h3 class="mt-4 text-lg font-semibold text-white">Adobe Lightroom</h3>
                     </div>
-
                     <div class="skill-item-clickable flex flex-col items-center text-center transform transition-transform duration-300 hover:scale-105 cursor-pointer" data-pdf-url="#" data-skill-name="#">
                         <div class="relative w-32 h-32">
                             <svg class="w-full h-full" viewBox="0 0 120 120">
@@ -163,7 +169,6 @@
                         </div>
                         <h3 class="mt-4 text-lg font-semibold text-white">DaVinci Resolve</h3>
                     </div>
-                    
                     <div class="skill-item-clickable flex flex-col items-center text-center transform transition-transform duration-300 hover:scale-105 cursor-pointer" data-pdf-url="https://drive.google.com/file/d/1L9D9sy74lprcvuBByDA8eg47kxHAKvrq/preview" data-skill-name="Chứng chỉ Microsoft Word">
                         <div class="relative w-32 h-32">
                             <svg class="w-full h-full" viewBox="0 0 120 120">
@@ -174,7 +179,6 @@
                         </div>
                         <h3 class="mt-4 text-lg font-semibold text-white">Microsoft Word</h3>
                     </div>
-
                     <div class="skill-item-clickable flex flex-col items-center text-center transform transition-transform duration-300 hover:scale-105 cursor-pointer" data-pdf-url="https://drive.google.com/file/d/1I57E5D_B6hLqLm4WzlSYYPOEAw32V7HS/preview" data-skill-name="Chứng chỉ Microsoft Powerpoint">
                         <div class="relative w-32 h-32">
                             <svg class="w-full h-full" viewBox="0 0 120 120">
@@ -185,7 +189,6 @@
                         </div>
                         <h3 class="mt-4 text-lg font-semibold text-white">Microsoft Powerpoint</h3>
                     </div>
-
                     <div class="skill-item-clickable flex flex-col items-center text-center transform transition-transform duration-300 hover:scale-105 cursor-pointer" data-pdf-url="https://drive.google.com/file/d/1DlF8K1zX8YdAS__1n-ME-HlxGpxnhkgJ/preview" data-skill-name="Chứng chỉ EFSET English Certificate">
                         <div class="relative w-32 h-32">
                             <svg class="w-full h-full" viewBox="0 0 120 120">
@@ -196,7 +199,6 @@
                         </div>
                         <h3 class="mt-4 text-lg font-semibold text-white">English Certificate (EFSET)</h3>
                     </div>
-
                     <div class="skill-item-clickable flex flex-col items-center text-center transform transition-transform duration-300 hover:scale-105 cursor-pointer" data-pdf-url="#" data-skill-name="#">
                         <div class="relative w-32 h-32">
                             <svg class="w-full h-full" viewBox="0 0 120 120">
@@ -206,6 +208,48 @@
                             <span class="absolute inset-0 flex items-center justify-center text-2xl font-bold text-white">80%</span>
                         </div>
                         <h3 class="mt-4 text-lg font-semibold text-white">Cameras Using Skills</h3>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="reviews" class="py-20 sm:py-32 bg-gray-800/30">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+                    <div>
+                        <h2 class="text-3xl font-bold text-white sm:text-4xl">Đánh giá & Nhận xét</h2>
+                        <p class="mt-4 text-lg text-gray-400">Hãy cho tôi biết cảm nhận của bạn về công việc của tôi nhé!</p>
+                        
+                        <form id="review-form" class="mt-8 space-y-6 bg-gray-900/50 p-8 rounded-lg">
+                            <div>
+                                <label for="reviewer-name" class="block text-sm font-medium text-gray-300">Tên của bạn</label>
+                                <input type="text" id="reviewer-name" name="name" required class="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-300 mb-2">Đánh giá của bạn</label>
+                                <div class="rating">
+                                    <input type="radio" id="star5" name="rating" value="5" required /><label for="star5" title="5 sao"></label>
+                                    <input type="radio" id="star4" name="rating" value="4" /><label for="star4" title="4 sao"></label>
+                                    <input type="radio" id="star3" name="rating" value="3" /><label for="star3" title="3 sao"></label>
+                                    <input type="radio" id="star2" name="rating" value="2" /><label for="star2" title="2 sao"></label>
+                                    <input type="radio" id="star1" name="rating" value="1" /><label for="star1" title="1 sao"></label>
+                                </div>
+                            </div>
+                            <div>
+                                <label for="reviewer-comment" class="block text-sm font-medium text-gray-300">Bình luận</label>
+                                <textarea id="reviewer-comment" name="comment" rows="4" required class="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500"></textarea>
+                            </div>
+                            <button type="submit" id="submit-review-btn" class="w-full bg-teal-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-teal-600 transition duration-300 flex items-center justify-center">
+                                Gửi đánh giá
+                            </button>
+                            <p id="review-form-status" class="text-center text-sm mt-4"></p>
+                        </form>
+                    </div>
+                    <div class="mt-10 lg:mt-0">
+                        <h3 class="text-2xl font-bold text-white mb-6">Mọi người nói gì</h3>
+                        <div id="reviews-list" class="space-y-6 max-h-[600px] overflow-y-auto pr-4">
+                           <p class="text-gray-400">Đang tải các đánh giá...</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -240,7 +284,6 @@
             <iframe id="video-iframe" class="w-full h-full rounded-lg" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
         </div>
     </div>
-    
     <div id="pdf-modal-overlay" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-[51] opacity-0 pointer-events-none">
         <div id="pdf-modal-content" class="bg-gray-700 w-full max-w-4xl h-[90vh] rounded-lg shadow-2xl relative transform scale-95 opacity-0 flex flex-col">
             <div class="flex justify-between items-center p-4 border-b border-gray-600 flex-shrink-0">
@@ -254,7 +297,6 @@
             </div>
         </div>
     </div>
-
     <div id="project-detail-modal-overlay" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-[51] opacity-0 pointer-events-none p-4">
         <div id="project-detail-modal-content" class="bg-gray-800 w-full max-w-4xl max-h-[90vh] rounded-lg shadow-2xl relative transform scale-95 opacity-0 flex flex-col overflow-hidden">
             <div class="flex justify-between items-center p-4 border-b border-gray-700 flex-shrink-0">
@@ -266,8 +308,7 @@
             <div class="flex-grow overflow-y-auto">
                 <img id="project-detail-image" src="" alt="Project Image" class="w-full h-auto object-cover" loading="lazy">
                 <div class="p-6">
-                    <div id="project-detail-tech" class="flex flex-wrap gap-2 mb-4">
-                    </div>
+                    <div id="project-detail-tech" class="flex flex-wrap gap-2 mb-4"></div>
                     <p id="project-detail-description" class="text-gray-300 whitespace-pre-wrap"></p>
                 </div>
             </div>
@@ -280,11 +321,11 @@
     </div>
 
     <script type="module">
-        import { db, projectsCollectionRef } from './firebase-config.js';
-        import { onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-        // Import Firestore functions for counter
-        import { doc, getDoc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        // Import existing and new references/functions from firebase-config
+        import { db, projectsCollectionRef, reviewsCollectionRef } from './firebase-config.js';
+        import { onSnapshot, doc, getDoc, updateDoc, increment, addDoc, serverTimestamp, query, orderBy } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
+        // Existing Element References
         const portfolioGrid = document.getElementById('portfolio-grid');
         const videoModalOverlay = document.getElementById('video-modal-overlay');
         const videoModalContent = document.getElementById('video-modal-content');
@@ -314,34 +355,116 @@
         async function updateVisitorCount() {
             try {
                 const hasVisited = sessionStorage.getItem('hasVisitedPortfolio');
-
-                // Only increment if the user hasn't visited in this session
                 if (!hasVisited) {
                     await updateDoc(counterRef, { count: increment(1) });
                     sessionStorage.setItem('hasVisitedPortfolio', 'true');
                 }
-
-                // Get the latest count and display it
                 const docSnap = await getDoc(counterRef);
                 if (docSnap.exists()) {
-                    const count = docSnap.data().count;
-                    visitCountSpan.textContent = count.toLocaleString('vi-VN');
+                    visitCountSpan.textContent = docSnap.data().count.toLocaleString('vi-VN');
                 } else {
-                    console.error("Counter document ('counters/visits') does not exist in Firestore!");
+                    console.error("Counter document ('counters/visits') does not exist!");
                     visitCountSpan.textContent = "N/A";
                 }
-                
-                // Show the pop-up with a delay for a smooth entrance
-                setTimeout(() => {
-                    visitorCounterPopup.classList.add('show');
-                }, 500);
+                setTimeout(() => { visitorCounterPopup.classList.add('show'); }, 500);
             } catch (error) {
                 console.error("Error updating visitor count:", error);
                 visitCountSpan.textContent = "Lỗi";
                 visitorCounterPopup.classList.add('show');
             }
         }
-        
+
+        // --- NEW: REVIEW SUBMISSION AND DISPLAY LOGIC ---
+        const reviewForm = document.getElementById('review-form');
+        const reviewsList = document.getElementById('reviews-list');
+        const reviewFormStatus = document.getElementById('review-form-status');
+        const submitReviewBtn = document.getElementById('submit-review-btn');
+
+        // Function to handle review form submission
+        async function handleReviewSubmit(e) {
+            e.preventDefault();
+            submitReviewBtn.disabled = true;
+            submitReviewBtn.textContent = 'Đang gửi...';
+
+            const name = reviewForm.elements.name.value.trim();
+            const rating = reviewForm.elements.rating.value;
+            const comment = reviewForm.elements.comment.value.trim();
+
+            if (!name || !rating || !comment) {
+                reviewFormStatus.textContent = 'Vui lòng điền đầy đủ thông tin.';
+                reviewFormStatus.style.color = '#F87171'; // red-400
+                submitReviewBtn.disabled = false;
+                submitReviewBtn.textContent = 'Gửi đánh giá';
+                return;
+            }
+
+            try {
+                await addDoc(reviewsCollectionRef, {
+                    name: name,
+                    rating: parseInt(rating, 10),
+                    comment: comment,
+                    timestamp: serverTimestamp()
+                });
+                reviewForm.reset();
+                reviewFormStatus.textContent = 'Cảm ơn bạn đã gửi đánh giá!';
+                reviewFormStatus.style.color = '#34D399'; // green-400
+            } catch (error) {
+                console.error("Error adding review: ", error);
+                reviewFormStatus.textContent = 'Đã xảy ra lỗi. Vui lòng thử lại.';
+                reviewFormStatus.style.color = '#F87171'; // red-400
+            } finally {
+                setTimeout(() => {
+                    submitReviewBtn.disabled = false;
+                    submitReviewBtn.textContent = 'Gửi đánh giá';
+                    reviewFormStatus.textContent = '';
+                }, 3000);
+            }
+        }
+
+        // Function to render stars based on rating
+        function renderStars(rating) {
+            let starsHtml = '';
+            for (let i = 0; i < 5; i++) {
+                if (i < rating) {
+                    starsHtml += `<svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>`;
+                } else {
+                    starsHtml += `<svg class="w-5 h-5 text-gray-500" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>`;
+                }
+            }
+            return `<div class="flex items-center">${starsHtml}</div>`;
+        }
+
+        // Listen for real-time updates on reviews
+        const reviewsQuery = query(reviewsCollectionRef, orderBy('timestamp', 'desc'));
+        onSnapshot(reviewsQuery, (snapshot) => {
+            reviewsList.innerHTML = '';
+            if (snapshot.empty) {
+                reviewsList.innerHTML = '<p class="text-gray-400">Chưa có đánh giá nào. Hãy là người đầu tiên!</p>';
+                return;
+            }
+            snapshot.forEach(doc => {
+                const review = doc.data();
+                const reviewElement = document.createElement('div');
+                reviewElement.className = 'bg-gray-800 p-4 rounded-lg';
+                const reviewDate = review.timestamp ? review.timestamp.toDate().toLocaleDateString('vi-VN') : '';
+                
+                reviewElement.innerHTML = `
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h4 class="font-bold text-white">${review.name}</h4>
+                            <p class="text-xs text-gray-500">${reviewDate}</p>
+                        </div>
+                        ${renderStars(review.rating)}
+                    </div>
+                    <p class="mt-3 text-gray-300">${review.comment}</p>
+                `;
+                reviewsList.appendChild(reviewElement);
+            });
+        });
+
+        reviewForm.addEventListener('submit', handleReviewSubmit);
+
+        // --- EXISTING PORTFOLIO AND MODAL LOGIC ---
         function getYoutubeVideoId(url) {
             let videoId = '';
             const youtubeRegex = /^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
@@ -422,6 +545,7 @@
             projectDetailModalContent.classList.add('opacity-0', 'scale-95');
         }
 
+        // --- EXISTING EVENT LISTENERS AND INITIALIZATIONS ---
         portfolioGrid.addEventListener('click', (e) => {
             const portfolioItem = e.target.closest('.portfolio-item');
             if (!portfolioItem) return;
@@ -497,7 +621,6 @@
             }
         };
 
-        // Initialize the visitor counter when the page loads
         updateVisitorCount();
     </script>
 </body>

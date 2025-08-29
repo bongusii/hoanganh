@@ -26,3 +26,6 @@ export const db = getFirestore(app);
 
 // Export a reference to the projects collection
 export const projectsCollectionRef = collection(db, "projects");
+
+// NEW: Export a reference to the reviews collection
+export const reviewsCollectionRef = collection(db, "reviews");
