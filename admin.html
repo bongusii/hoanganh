@@ -88,9 +88,10 @@
     <div id="toast" class="fixed bottom-5 right-5 bg-gray-800 text-white py-2 px-4 rounded-lg shadow-lg transition-opacity duration-300 opacity-0"><p id="toast-message"></p></div>
 
     <script type="module">
+        // CHANGED: Added 'updateDoc' to import list
         import { db, auth, projectsCollectionRef, reviewsCollectionRef } from './firebase-config.js';
         import { onAuthStateChanged, signInAnonymously, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { onSnapshot, addDoc, deleteDoc, doc, query, orderBy } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { onSnapshot, addDoc, deleteDoc, doc, query, orderBy, updateDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // UI Elements
         const addProjectForm = document.getElementById('add-project-form');
@@ -103,8 +104,6 @@
         const projectUrlInput = document.getElementById('project-url');
         const toast = document.getElementById('toast');
         const toastMessage = document.getElementById('toast-message');
-        
-        // NEW: Review list element
         const adminReviewList = document.getElementById('admin-review-list');
 
         function showToast(message, isError = false) {
@@ -133,7 +132,6 @@
                 showToast('Có lỗi xảy ra, không thể thêm dự án.', true);
             }
         });
-
         function updateUrlField() {
             const selectedCategory = projectCategorySelect.value;
             if (selectedCategory === 'video') {
@@ -144,7 +142,6 @@
                 projectUrlInput.placeholder = 'https://example.com/image.jpg';
             }
         }
-        
         function renderAdminProjectList(projects) {
              adminProjectList.innerHTML = '';
              if (projects.length === 0) {
@@ -165,7 +162,7 @@
              });
         }
 
-        // --- NEW: REVIEW MANAGEMENT ---
+        // --- NEW AND IMPROVED: REVIEW MANAGEMENT ---
         function renderAdminReviewList(reviews) {
             adminReviewList.innerHTML = '';
             if (reviews.length === 0) {
@@ -174,16 +171,28 @@
             }
             reviews.forEach(review => {
                 const item = document.createElement('div');
-                item.className = 'bg-gray-700 p-4 rounded-lg flex items-start justify-between';
+                // NEW: Different style for pending reviews
+                const isPending = !review.approved;
+                item.className = `p-4 rounded-lg flex flex-col sm:flex-row items-start justify-between transition-colors ${isPending ? 'bg-yellow-900/50 border border-yellow-500' : 'bg-gray-700'}`;
+                
+                // NEW: Conditional buttons based on approval status
+                const actionButtons = isPending 
+                ? `<button data-id="${review.id}" class="approve-review-btn bg-green-600 hover:bg-green-700 text-white font-bold py-1 px-3 rounded-md transition duration-300 w-full sm:w-auto mb-2 sm:mb-0 sm:mr-2">Duyệt</button>`
+                : `<button data-id="${review.id}" class="hide-review-btn bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-1 px-3 rounded-md transition duration-300 w-full sm:w-auto mb-2 sm:mb-0 sm:mr-2">Ẩn</button>`;
+
                 item.innerHTML = `
-                    <div class="flex-1 mr-4">
+                    <div class="flex-1 mr-4 mb-4 sm:mb-0">
                         <div class="flex items-center mb-1">
                            <h3 class="font-bold text-white mr-2">${review.name}</h3>
                            <span class="text-yellow-400 text-sm">(${review.rating} ★)</span>
+                           ${isPending ? '<span class="ml-3 text-xs font-semibold bg-yellow-500 text-black px-2 py-0.5 rounded-full">Đang chờ</span>' : ''}
                         </div>
                         <p class="text-sm text-gray-300">${review.comment}</p>
                     </div>
-                    <button data-id="${review.id}" class="delete-review-btn bg-red-600 hover:bg-red-700 text-white font-bold py-1 px-3 rounded-md transition duration-300 flex-shrink-0">Xóa</button>
+                    <div class="flex flex-col sm:flex-row w-full sm:w-auto flex-shrink-0">
+                        ${actionButtons}
+                        <button data-id="${review.id}" class="delete-review-btn bg-red-600 hover:bg-red-700 text-white font-bold py-1 px-3 rounded-md transition duration-300 w-full sm:w-auto">Xóa</button>
+                    </div>
                 `;
                 adminReviewList.appendChild(item);
             });
@@ -204,44 +213,61 @@
             }
         });
 
-        // Listen for project updates
         onSnapshot(projectsCollectionRef, (snapshot) => {
             const projects = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             renderAdminProjectList(projects);
         });
         
-        // NEW: Listen for review updates
+        // CHANGED: Now fetches all reviews, sorted by timestamp
         const reviewsQuery = query(reviewsCollectionRef, orderBy('timestamp', 'desc'));
         onSnapshot(reviewsQuery, (snapshot) => {
             const reviews = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             renderAdminReviewList(reviews);
         });
 
-        // Event delegation for delete buttons
+        // CHANGED: Event listener now handles all actions in the admin panel
         adminPanel.addEventListener('click', async (e) => {
-            // Project delete logic
-            if (e.target.classList.contains('delete-project-btn')) {
-                const id = e.target.dataset.id;
+            const target = e.target;
+            const id = target.dataset.id;
+            if (!id) return;
+
+            // Project delete
+            if (target.classList.contains('delete-project-btn')) {
                 if (confirm('Bạn có chắc chắn muốn xóa DỰ ÁN này?')) {
                     try {
                         await deleteDoc(doc(db, "projects", id));
                         showToast('Xóa dự án thành công!');
                     } catch (error) {
-                        console.error("Lỗi xóa dự án: ", error);
-                        showToast('Có lỗi xảy ra, không thể xóa dự án.', true);
+                        showToast('Lỗi: không thể xóa dự án.', true);
                     }
                 }
             }
-            // NEW: Review delete logic
-            if (e.target.classList.contains('delete-review-btn')) {
-                const id = e.target.dataset.id;
-                if (confirm('Bạn có chắc chắn muốn xóa ĐÁNH GIÁ này?')) {
+            // Review approve
+            else if (target.classList.contains('approve-review-btn')) {
+                try {
+                    await updateDoc(doc(db, "reviews", id), { approved: true });
+                    showToast('Đã duyệt đánh giá.');
+                } catch (error) {
+                    showToast('Lỗi: không thể duyệt đánh giá.', true);
+                }
+            }
+            // Review hide
+            else if (target.classList.contains('hide-review-btn')) {
+                try {
+                    await updateDoc(doc(db, "reviews", id), { approved: false });
+                    showToast('Đã ẩn đánh giá.');
+                } catch (error) {
+                    showToast('Lỗi: không thể ẩn đánh giá.', true);
+                }
+            }
+            // Review delete
+            else if (target.classList.contains('delete-review-btn')) {
+                if (confirm('Bạn có chắc chắn muốn xóa vĩnh viễn ĐÁNH GIÁ này?')) {
                     try {
                         await deleteDoc(doc(db, "reviews", id));
                         showToast('Xóa đánh giá thành công!');
                     } catch (error) {
-                        console.error("Lỗi xóa đánh giá: ", error);
-                        showToast('Có lỗi xảy ra, không thể xóa đánh giá.', true);
+                        showToast('Lỗi: không thể xóa đánh giá.', true);
                     }
                 }
             }
