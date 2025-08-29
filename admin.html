@@ -16,7 +16,6 @@
 
     <div id="admin-page" class="min-h-screen p-4 sm:p-8">
         <div class="max-w-4xl mx-auto">
-            <!-- Login Container -->
             <div id="auth-container">
                 <div class="bg-gray-900 p-8 rounded-lg shadow-lg max-w-md mx-auto">
                     <h2 class="text-2xl font-bold text-center text-white mb-6">Đăng nhập Admin</h2>
@@ -24,7 +23,6 @@
                 </div>
             </div>
 
-            <!-- Admin Panel (hidden by default) -->
             <div id="admin-panel" class="hidden">
                  <div class="flex justify-between items-center mb-8">
                     <h1 class="text-3xl font-bold text-white">Trang quản trị</h1>
@@ -34,7 +32,6 @@
                     </div>
                 </div>
 
-                <!-- Add Project Form -->
                 <div class="bg-gray-900 p-8 rounded-lg shadow-lg mb-8">
                     <h2 class="text-2xl font-bold text-white mb-6">Thêm dự án mới</h2>
                     <form id="add-project-form">
@@ -59,12 +56,10 @@
                             <label for="project-thumbnail-url" class="block text-gray-300 text-sm font-bold mb-2">URL Thumbnail (Tùy chọn)</label>
                             <input type="url" id="project-thumbnail-url" placeholder="Để trống nếu muốn tự động tạo/dùng URL chính" class="w-full bg-gray-700 border border-gray-600 rounded-lg py-2 px-3 text-white focus:outline-none focus:border-teal-500">
                         </div>
-                        <!-- NEW: Description Field -->
                         <div class="mb-4">
                             <label for="project-description" class="block text-gray-300 text-sm font-bold mb-2">Mô tả dự án</label>
                             <textarea id="project-description" rows="4" placeholder="Mô tả ngắn về dự án, vai trò của bạn, mục tiêu..." class="w-full bg-gray-700 border border-gray-600 rounded-lg py-2 px-3 text-white focus:outline-none focus:border-teal-500"></textarea>
                         </div>
-                        <!-- NEW: Technologies Field -->
                         <div class="mb-6">
                             <label for="project-tech" class="block text-gray-300 text-sm font-bold mb-2">Công nghệ sử dụng (cách nhau bởi dấu phẩy)</label>
                             <input type="text" id="project-tech" placeholder="VD: HTML, CSS, Photoshop, Illustrator" class="w-full bg-gray-700 border border-gray-600 rounded-lg py-2 px-3 text-white focus:outline-none focus:border-teal-500">
@@ -73,11 +68,17 @@
                     </form>
                 </div>
 
-                <!-- Project List -->
-                <div>
+                <div class="mb-12">
                     <h2 class="text-2xl font-bold text-white mb-6">Danh sách dự án</h2>
                     <div id="admin-project-list" class="space-y-4">
                          <p class="text-gray-400">Đang tải danh sách...</p>
+                    </div>
+                </div>
+
+                <div>
+                    <h2 class="text-2xl font-bold text-white mb-6">Duyệt Bình luận</h2>
+                    <div id="comment-moderation-list" class="space-y-4">
+                        <p class="text-gray-400">Đang tải các bình luận chờ duyệt...</p>
                     </div>
                 </div>
             </div>
@@ -89,88 +90,32 @@
     <script type="module">
         import { db, auth, projectsCollectionRef } from './firebase-config.js';
         import { onAuthStateChanged, signInAnonymously, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { onSnapshot, addDoc, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { 
+            onSnapshot, addDoc, deleteDoc, doc, updateDoc, 
+            collection, query, where 
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // UI Elements
-        const addProjectForm = document.getElementById('add-project-form');
-        // ... (other elements)
-
-        // --- Event Listeners & Main Logic ---
-        addProjectForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const title = document.getElementById('project-title').value;
-            const category = document.getElementById('project-category').value;
-            const url = document.getElementById('project-url').value;
-            const thumbnailUrl = document.getElementById('project-thumbnail-url').value;
-            // NEW: Get new field values
-            const description = document.getElementById('project-description').value;
-            const technologies = document.getElementById('project-tech').value;
-            
-            try {
-                // NEW: Save new fields to Firestore
-                await addDoc(projectsCollectionRef, { 
-                    title, 
-                    category, 
-                    url, 
-                    thumbnailUrl,
-                    description,
-                    technologies 
-                });
-                showToast('Thêm dự án thành công!');
-                addProjectForm.reset();
-            } catch (error) {
-                console.error("Lỗi thêm dự án: ", error);
-                showToast('Có lỗi xảy ra, không thể thêm dự án.', true);
-            }
-        });
-        
-        // ... (rest of the script remains the same)
         const authContainer = document.getElementById('auth-container');
         const adminPanel = document.getElementById('admin-panel');
         const logoutButton = document.getElementById('logout-button');
+        const addProjectForm = document.getElementById('add-project-form');
         const adminProjectList = document.getElementById('admin-project-list');
         const projectCategorySelect = document.getElementById('project-category');
         const urlLabel = document.getElementById('url-label');
         const projectUrlInput = document.getElementById('project-url');
         const toast = document.getElementById('toast');
         const toastMessage = document.getElementById('toast-message');
+        const commentModerationList = document.getElementById('comment-moderation-list');
+
         function showToast(message, isError = false) {
             toastMessage.textContent = message;
             toast.classList.remove('opacity-0');
             toast.style.backgroundColor = isError ? '#DC2626' : '#10B981';
             setTimeout(() => { toast.classList.add('opacity-0'); }, 3000);
         }
-        function updateUrlField() {
-            const selectedCategory = projectCategorySelect.value;
-            if (selectedCategory === 'video') {
-                urlLabel.textContent = 'URL Video YouTube';
-                projectUrlInput.placeholder = 'https://www.youtube.com/watch?v=...';
-            } else {
-                urlLabel.textContent = 'URL Hình ảnh';
-                projectUrlInput.placeholder = 'https://example.com/image.jpg';
-            }
-        }
-        function renderAdminList(projects) {
-             adminProjectList.innerHTML = '';
-             if (projects.length === 0) {
-                 adminProjectList.innerHTML = `<p class="text-gray-400">Chưa có dự án nào.</p>`;
-                 return;
-             }
-             projects.forEach(project => {
-                 const item = document.createElement('div');
-                 item.className = 'bg-gray-700 p-4 rounded-lg flex items-center justify-between';
-                 item.innerHTML = `
-                    <div>
-                        <h3 class="font-bold text-white">${project.title}</h3>
-                        <p class="text-sm text-gray-400 uppercase">${project.category}</p>
-                    </div>
-                    <button data-id="${project.id}" class="delete-btn bg-red-600 hover:bg-red-700 text-white font-bold py-1 px-3 rounded-md transition duration-300">Xóa</button>
-                 `;
-                 adminProjectList.appendChild(item);
-             });
-        }
-        projectCategorySelect.addEventListener('change', updateUrlField);
-        logoutButton.addEventListener('click', () => signOut(auth));
+
+        // --- AUTH LOGIC ---
         onAuthStateChanged(auth, user => {
             if (user) {
                 authContainer.style.display = 'none';
@@ -184,12 +129,55 @@
                 });
             }
         });
-        onSnapshot(projectsCollectionRef, (snapshot) => {
-            const projects = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            renderAdminList(projects);
+        logoutButton.addEventListener('click', () => signOut(auth));
+
+        // --- PROJECT MANAGEMENT LOGIC ---
+        addProjectForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const title = document.getElementById('project-title').value;
+            const category = document.getElementById('project-category').value;
+            const url = document.getElementById('project-url').value;
+            const thumbnailUrl = document.getElementById('project-thumbnail-url').value;
+            const description = document.getElementById('project-description').value;
+            const technologies = document.getElementById('project-tech').value;
+            
+            try {
+                await addDoc(projectsCollectionRef, { title, category, url, thumbnailUrl, description, technologies });
+                showToast('Thêm dự án thành công!');
+                addProjectForm.reset();
+            } catch (error) {
+                console.error("Lỗi thêm dự án: ", error);
+                showToast('Có lỗi xảy ra, không thể thêm dự án.', true);
+            }
         });
+
+        onSnapshot(projectsCollectionRef, (snapshot) => {
+            renderAdminList(snapshot.docs);
+        });
+
+        function renderAdminList(projects) {
+             adminProjectList.innerHTML = '';
+             if (projects.length === 0) {
+                 adminProjectList.innerHTML = `<p class="text-gray-400">Chưa có dự án nào.</p>`;
+                 return;
+             }
+             projects.forEach(projectDoc => {
+                 const project = projectDoc.data();
+                 const item = document.createElement('div');
+                 item.className = 'bg-gray-700 p-4 rounded-lg flex items-center justify-between';
+                 item.innerHTML = `
+                    <div>
+                        <h3 class="font-bold text-white">${project.title}</h3>
+                        <p class="text-sm text-gray-400 uppercase">${project.category}</p>
+                    </div>
+                    <button data-id="${projectDoc.id}" class="delete-project-btn bg-red-600 hover:bg-red-700 text-white font-bold py-1 px-3 rounded-md transition duration-300">Xóa</button>
+                 `;
+                 adminProjectList.appendChild(item);
+             });
+        }
+        
         adminProjectList.addEventListener('click', async (e) => {
-            if (e.target.classList.contains('delete-btn')) {
+            if (e.target.classList.contains('delete-project-btn')) {
                 const id = e.target.dataset.id;
                 if (confirm('Bạn có chắc chắn muốn xóa dự án này?')) {
                     try {
@@ -202,7 +190,88 @@
                 }
             }
         });
+
+        function updateUrlField() {
+            const selectedCategory = projectCategorySelect.value;
+            if (selectedCategory === 'video') {
+                urlLabel.textContent = 'URL Video YouTube';
+                projectUrlInput.placeholder = 'https://www.youtube.com/watch?v=...';
+            } else {
+                urlLabel.textContent = 'URL Hình ảnh';
+                projectUrlInput.placeholder = 'https://example.com/image.jpg';
+            }
+        }
+        projectCategorySelect.addEventListener('change', updateUrlField);
         updateUrlField();
+
+        // --- COMMENT MODERATION LOGIC ---
+        const commentsCollectionRef = collection(db, "comments");
+        const unapprovedCommentsQuery = query(commentsCollectionRef, where("approved", "==", false));
+        onSnapshot(unapprovedCommentsQuery, (snapshot) => {
+            renderCommentModerationList(snapshot.docs);
+        });
+
+        function renderCommentModerationList(commentDocs) {
+            commentModerationList.innerHTML = '';
+            if (commentDocs.length === 0) {
+                commentModerationList.innerHTML = `<p class="text-gray-400">Không có bình luận nào chờ duyệt.</p>`;
+                return;
+            }
+
+            commentDocs.forEach(commentDoc => {
+                const comment = commentDoc.data();
+                const item = document.createElement('div');
+                item.className = 'bg-gray-700 p-4 rounded-lg';
+                item.innerHTML = `
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <div class="flex items-center mb-2">
+                                <h3 class="font-bold text-white mr-2">${comment.name}</h3>
+                                <div class="flex text-amber-400">
+                                    ${'&#9733;'.repeat(comment.rating)}${'&#9734;'.repeat(5 - comment.rating)}
+                                </div>
+                            </div>
+                            <p class="text-gray-300 italic">"${comment.comment}"</p>
+                            <p class="text-xs text-gray-500 mt-2">
+                                ${new Date(comment.timestamp.seconds * 1000).toLocaleString('vi-VN')}
+                            </p>
+                        </div>
+                        <div class="flex space-x-2 flex-shrink-0 ml-4">
+                            <button data-id="${commentDoc.id}" class="approve-btn bg-green-600 hover:bg-green-700 text-white font-bold py-1 px-3 rounded-md">Duyệt</button>
+                            <button data-id="${commentDoc.id}" class="delete-comment-btn bg-red-600 hover:bg-red-700 text-white font-bold py-1 px-3 rounded-md">Xóa</button>
+                        </div>
+                    </div>
+                `;
+                commentModerationList.appendChild(item);
+            });
+        }
+
+        commentModerationList.addEventListener('click', async (e) => {
+            const target = e.target;
+            const id = target.dataset.id;
+            if (!id) return;
+
+            const commentDocRef = doc(db, "comments", id);
+            if (target.classList.contains('approve-btn')) {
+                try {
+                    await updateDoc(commentDocRef, { approved: true });
+                    showToast('Đã duyệt bình luận!');
+                } catch (error) {
+                    showToast('Lỗi khi duyệt.', true);
+                }
+            }
+
+            if (target.classList.contains('delete-comment-btn')) {
+                if (confirm('Bạn có chắc chắn muốn xóa bình luận này vĩnh viễn?')) {
+                    try {
+                        await deleteDoc(commentDocRef);
+                        showToast('Xóa bình luận thành công!');
+                    } catch (error) {
+                        showToast('Lỗi khi xóa.', true);
+                    }
+                }
+            }
+        });
     </script>
 </body>
 </html>
