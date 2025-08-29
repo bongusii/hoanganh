@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="https://github.com/bongusii/hoanganh/blob/main/icon.png?raw=true">
     <title>Phan Hoang Anh's Portfolio</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn/tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -17,7 +17,6 @@
         ::-webkit-scrollbar-thumb { background: #374151; border-radius: 10px; }
         .portfolio-item { transition: transform 0.3s ease, opacity 0.3s ease; cursor: pointer; }
         .portfolio-item.hidden-item { transform: scale(0.9); opacity: 0; display: none; }
-        /* CHANGED: Added new modal IDs to the style rules */
         #video-modal-overlay, #pdf-modal-overlay, #project-detail-modal-overlay, #review-modal-overlay { 
             transition: opacity 0.3s ease-in-out; 
         }
@@ -38,6 +37,7 @@
             transform: translateY(0);
             opacity: 1;
         }
+        /* --- CHANGED: Tweaked star rating CSS for better alignment --- */
         .rating { 
             display: inline-flex; 
             flex-direction: row-reverse; 
@@ -51,7 +51,11 @@
             cursor: pointer; 
             margin: 0 0.1em; /* Added slight margin */
         }
-        .rating > label::before { content: "\2605"; position: absolute; opacity: 0.3; }
+        .rating > label::before { 
+            content: "\2605"; 
+            position: absolute; 
+            opacity: 0.3; 
+        }
         .rating > label:hover:before,
         .rating > label:hover ~ label:before,
         .rating > input:checked ~ label:before { opacity: 1; }
@@ -228,13 +232,11 @@
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
                 <h2 class="text-3xl font-bold text-white sm:text-4xl">Đánh giá & Nhận xét</h2>
                 <p class="mt-4 text-lg text-gray-400 max-w-2xl mx-auto">Mọi người nói gì về công việc của tôi. Mọi ý kiến đóng góp đều là nguồn động lực quý giá.</p>
-                
                 <div class="mt-8">
                     <button id="open-review-modal-btn" class="bg-teal-500 text-white font-bold py-3 px-8 rounded-full hover:bg-teal-600 transition duration-300 text-lg disabled:bg-gray-500 disabled:cursor-not-allowed">
                         Để lại đánh giá của bạn
                     </button>
                 </div>
-
                 <div id="reviews-list" class="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-left">
                    <p class="col-span-full text-gray-400">Đang tải các đánh giá...</p>
                 </div>
@@ -305,22 +307,29 @@
                 <form id="review-form" class="space-y-6">
                     <div>
                         <label for="reviewer-name" class="block text-sm font-medium text-gray-300 text-left">Tên của bạn</label>
-                        <input type="text" id="reviewer-name" ...>
+                        <input type="text" id="reviewer-name" name="name" required class="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500">
                     </div>
 
                     <div class="text-center">
                         <label class="block text-sm font-medium text-gray-300 mb-2">Đánh giá của bạn</label>
                         <div class="rating">
-                            </div>
+                            <input type="radio" id="star5" name="rating" value="5" required /><label for="star5" title="5 sao"></label>
+                            <input type="radio" id="star4" name="rating" value="4" /><label for="star4" title="4 sao"></label>
+                            <input type="radio" id="star3" name="rating" value="3" /><label for="star3" title="3 sao"></label>
+                            <input type="radio" id="star2" name="rating" value="2" /><label for="star2" title="2 sao"></label>
+                            <input type="radio" id="star1" name="rating" value="1" /><label for="star1" title="1 sao"></label>
+                        </div>
                     </div>
 
                     <div>
                         <label for="reviewer-comment" class="block text-sm font-medium text-gray-300 text-left">Bình luận</label>
-                        <textarea id="reviewer-comment" ...></textarea>
+                        <textarea id="reviewer-comment" name="comment" rows="4" required class="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500"></textarea>
                     </div>
 
-                    <button type="submit" ...>Gửi đánh giá</button>
-                    <p id="review-form-status" ...></p>
+                    <button type="submit" id="submit-review-btn" class="w-full bg-teal-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-teal-600 transition duration-300 flex items-center justify-center">
+                        Gửi đánh giá
+                    </button>
+                    <p id="review-form-status" class="text-center text-sm mt-4 font-semibold h-4"></p>
                 </form>
             </div>
         </div>
@@ -387,13 +396,11 @@
         const reviewsList = document.getElementById('reviews-list');
         const reviewFormStatus = document.getElementById('review-form-status');
         const submitReviewBtn = document.getElementById('submit-review-btn');
-        // NEW: Review modal elements
         const openReviewModalBtn = document.getElementById('open-review-modal-btn');
         const reviewModalOverlay = document.getElementById('review-modal-overlay');
         const reviewModalContent = document.getElementById('review-modal-content');
         const closeReviewModalBtn = document.getElementById('close-review-modal-btn');
 
-        // NEW: Functions to control the review modal
         function openReviewModal() {
             reviewModalOverlay.classList.remove('opacity-0', 'pointer-events-none');
             reviewModalContent.classList.remove('opacity-0', 'scale-95');
@@ -403,7 +410,6 @@
             reviewModalContent.classList.add('opacity-0', 'scale-95');
         }
 
-        // CHANGED: This function now controls the "open modal" button
         function setupReviewButton() {
             if (localStorage.getItem('hasSubmittedReview') === 'true') {
                 openReviewModalBtn.disabled = true;
@@ -415,6 +421,7 @@
             e.preventDefault();
             submitReviewBtn.disabled = true;
             submitReviewBtn.textContent = 'Đang gửi...';
+            reviewFormStatus.textContent = ''; // Clear previous status
 
             const name = reviewForm.elements.name.value.trim();
             const rating = reviewForm.elements.rating.value;
@@ -439,14 +446,13 @@
                 
                 localStorage.setItem('hasSubmittedReview', 'true');
                 reviewForm.reset();
-                setupReviewButton(); // Update the button state
+                setupReviewButton(); 
                 
-                // Show success message and close modal after a delay
                 reviewFormStatus.textContent = 'Gửi thành công! Đánh giá của bạn đang chờ duyệt.';
                 reviewFormStatus.style.color = '#34D399';
                 setTimeout(() => {
                     closeReviewModal();
-                    reviewFormStatus.textContent = ''; // Clear status
+                    reviewFormStatus.textContent = ''; 
                     submitReviewBtn.disabled = false;
                     submitReviewBtn.textContent = 'Gửi đánh giá';
                 }, 2000);
@@ -465,7 +471,7 @@
             for (let i = 0; i < 5; i++) {
                 starsHtml += `<svg class="w-5 h-5 ${i < rating ? 'text-yellow-400' : 'text-gray-500'}" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>`;
             }
-            return `<div class="flex items-center">${starsHtml}</div>`;
+            return `<div class="flex items-center justify-center">${starsHtml}</div>`;
         }
 
         const reviewsQuery = query(reviewsCollectionRef, where("approved", "==", true), orderBy('timestamp', 'desc'));
@@ -478,7 +484,6 @@
             snapshot.forEach(doc => {
                 const review = doc.data();
                 const reviewElement = document.createElement('div');
-                // CHANGED: Display each review in its own card
                 reviewElement.className = 'bg-gray-800 p-6 rounded-lg text-left';
                 const reviewDate = review.timestamp ? review.timestamp.toDate().toLocaleDateString('vi-VN') : '';
                 
@@ -496,7 +501,7 @@
             });
         });
 
-        // --- EXISTING PORTFOLIO AND OTHER MODAL LOGIC (No changes below this line) ---
+        // --- EXISTING PORTFOLIO AND OTHER MODAL LOGIC ---
         function getYoutubeVideoId(url) {
             let videoId = '';
             const youtubeRegex = /^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
@@ -574,13 +579,11 @@
         }
 
         // --- ALL EVENT LISTENERS ---
-        // Review Modal listeners
         openReviewModalBtn.addEventListener('click', openReviewModal);
         closeReviewModalBtn.addEventListener('click', closeReviewModal);
         reviewModalOverlay.addEventListener('click', (e) => { if(e.target === reviewModalOverlay) closeReviewModal(); });
         reviewForm.addEventListener('submit', handleReviewSubmit);
         
-        // Other listeners
         portfolioGrid.addEventListener('click', (e) => {
             const portfolioItem = e.target.closest('.portfolio-item');
             if (!portfolioItem) return;
