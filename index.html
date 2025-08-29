@@ -17,13 +17,14 @@
         ::-webkit-scrollbar-thumb { background: #374151; border-radius: 10px; }
         .portfolio-item { transition: transform 0.3s ease, opacity 0.3s ease; cursor: pointer; }
         .portfolio-item.hidden-item { transform: scale(0.9); opacity: 0; display: none; }
-        #video-modal-overlay, #pdf-modal-overlay, #project-detail-modal-overlay, #rating-modal-overlay { transition: opacity 0.3s ease-in-out; }
-        #video-modal-content, #pdf-modal-content, #project-detail-modal-content, #rating-modal-content { transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out; }
+        #video-modal-overlay, #pdf-modal-overlay, #project-detail-modal-overlay, #rating-modal-overlay { transition: opacity 0.3s ease-in-out; } /* BỔ SUNG: #rating-modal-overlay */
+        #video-modal-content, #pdf-modal-content, #project-detail-modal-content, #rating-modal-content { transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out; } /* BỔ SUNG: #rating-modal-content */
         .progress-ring__circle {
             transition: stroke-dashoffset 0.8s ease-out;
             transform: rotate(-90deg);
             transform-origin: 50% 50%;
         }
+        /* Visitor Counter Pop-up Styles */
         #visitor-counter {
             transform: translateY(100px);
             transition: transform 0.8s ease-in-out, opacity 0.5s ease-in-out;
@@ -33,6 +34,7 @@
             transform: translateY(0);
             opacity: 1;
         }
+        /* BỔ SUNG: CSS cho Rating & Comment */
         .rating-stars label {
             color: #4b5563;
             cursor: pointer;
@@ -189,6 +191,13 @@
         </div>
     </footer>
 
+    <div id="video-modal-overlay" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-[51] opacity-0 pointer-events-none">
+        </div>
+    <div id="pdf-modal-overlay" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-[51] opacity-0 pointer-events-none">
+        </div>
+    <div id="project-detail-modal-overlay" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-[51] opacity-0 pointer-events-none p-4">
+        </div>
+
     <div id="rating-modal-overlay" class="hidden fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-[52] p-4">
         <div id="rating-modal-content" class="bg-gray-800 w-full max-w-md rounded-lg shadow-2xl relative transform scale-95 opacity-0">
             <button id="close-rating-modal-btn" class="absolute top-3 right-3 text-gray-400 hover:text-white">
@@ -223,19 +232,43 @@
     </div>
 
     <div id="visitor-counter" class="fixed bottom-5 left-5 bg-gray-800/80 backdrop-blur-sm text-white py-2 px-4 rounded-lg shadow-lg flex items-center space-x-2 z-40">
-        <i data-lucide="users" class="w-5 h-5"></i>
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
         <p class="text-sm">Lượt truy cập: <span id="visit-count" class="font-bold">...</span></p>
     </div>
 
     <script type="module">
         import { db, projectsCollectionRef } from './firebase-config.js';
         import { onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        // BỔ SUNG: Import đầy đủ các hàm cần thiết của Firestore
         import { 
-            doc, getDoc, updateDoc, increment, runTransaction,
+            doc, getDoc, updateDoc, increment, getDocs, runTransaction,
             collection, query, where, orderBy, limit, Timestamp, startAfter, addDoc 
         } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // --- GLOBAL ELEMENTS & VARIABLES ---
+        // Các biến có sẵn
+        const portfolioGrid = document.getElementById('portfolio-grid');
+        const videoModalOverlay = document.getElementById('video-modal-overlay');
+        const videoModalContent = document.getElementById('video-modal-content');
+        const closeVideoModalButton = document.getElementById('close-video-modal-button');
+        const videoIframe = document.getElementById('video-iframe');
+        const pdfModalOverlay = document.getElementById('pdf-modal-overlay');
+        const pdfModalContent = document.getElementById('pdf-modal-content');
+        const closePdfModalButton = document.getElementById('close-pdf-modal-button');
+        const pdfIframe = document.getElementById('pdf-iframe');
+        const pdfModalTitle = document.getElementById('pdf-modal-title');
+        const skillsContainer = document.getElementById('skills');
+        const projectDetailModalOverlay = document.getElementById('project-detail-modal-overlay');
+        const projectDetailModalContent = document.getElementById('project-detail-modal-content');
+        const closeProjectDetailModalButton = document.getElementById('close-project-detail-modal-button');
+        const projectDetailTitle = document.getElementById('project-detail-title');
+        const projectDetailImage = document.getElementById('project-detail-image');
+        const projectDetailTech = document.getElementById('project-detail-tech');
+        const projectDetailDescription = document.getElementById('project-detail-description');
+        let fetchedProjects = [];
+        const visitorCounterPopup = document.getElementById('visitor-counter');
+        const visitCountSpan = document.getElementById('visit-count');
+        
+        // BỔ SUNG: Các biến cho Rating & Comment
         const ratingDisplay = document.getElementById('rating-display');
         const averageRatingSpan = document.getElementById('average-rating');
         const totalRatingsSpan = document.getElementById('total-ratings');
@@ -249,7 +282,73 @@
         const loadMoreBtn = document.getElementById('load-more-comments-btn');
         let lastVisibleComment = null;
 
-        // --- RATING & COMMENT LOGIC ---
+
+        // --- LOGIC CÓ SẴN ---
+        // VISITOR COUNTER LOGIC
+        async function updateVisitorCount() {
+            const counterRef = doc(db, "counters", "visits");
+            try {
+                const hasVisited = sessionStorage.getItem('hasVisitedPortfolio');
+                if (!hasVisited) {
+                    await updateDoc(counterRef, { count: increment(1) });
+                    sessionStorage.setItem('hasVisitedPortfolio', 'true');
+                }
+                const docSnap = await getDoc(counterRef);
+                if (docSnap.exists()) {
+                    const count = docSnap.data().count;
+                    visitCountSpan.textContent = count.toLocaleString('vi-VN');
+                } else {
+                    visitCountSpan.textContent = "N/A";
+                }
+                setTimeout(() => {
+                    visitorCounterPopup.classList.add('show');
+                }, 500);
+            } catch (error) {
+                console.error("Error updating visitor count:", error);
+                visitCountSpan.textContent = "Lỗi";
+                visitorCounterPopup.classList.add('show');
+            }
+        }
+        
+        // CÁC HÀM KHÁC (renderPortfolio, modals, v.v...)
+        function getYoutubeVideoId(url) {
+            let videoId = '';
+            const youtubeRegex = /^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+            const match = url.match(youtubeRegex);
+            if (match) { videoId = match[1]; }
+            return videoId;
+        }
+
+        function renderPortfolio(projects) {
+            fetchedProjects = projects;
+            if (!portfolioGrid) return;
+            portfolioGrid.innerHTML = '';
+            if (projects.length === 0) { 
+                portfolioGrid.innerHTML = `<p class="col-span-full text-center text-gray-400">Chưa có dự án nào được thêm.</p>`;
+                return;
+            }
+            const categoryMap = { ui: 'Lập trình UI', design: 'Thiết kế', photo: 'Nhiếp ảnh', video: 'Video' };
+            projects.forEach(project => {
+                const item = document.createElement('div');
+                item.className = 'portfolio-item group relative overflow-hidden rounded-lg shadow-lg';
+                item.dataset.category = project.category;
+                item.dataset.id = project.id;
+                let imageUrl, playIconOverlay = '';
+                if (project.thumbnailUrl && project.thumbnailUrl.trim() !== '') { imageUrl = project.thumbnailUrl; } else if (project.category === 'video') { const videoId = getYoutubeVideoId(project.url); imageUrl = videoId ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg` : project.url; } else { imageUrl = project.url; }
+                if (project.category === 'video') { playIconOverlay = `<div class="absolute inset-0 bg-black bg-opacity-20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"><svg class="w-16 h-16 text-white opacity-80" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div>`; }
+                item.innerHTML = `<img src="${imageUrl}" alt="${project.title}" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500" loading="lazy" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1f2937/34d399?text=Image+Error';"><div class="absolute inset-0 bg-black bg-opacity-60 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center p-4"><div class="text-center"><h3 class="text-xl font-bold text-white">${project.title}</h3><p class="text-sm text-gray-300 mt-1">${categoryMap[project.category] || 'Chung'}</p></div></div>${playIconOverlay}`;
+                portfolioGrid.appendChild(item);
+            });
+        }
+        
+        function openVideoModal(videoUrl) { /* ... */ }
+        function closeVideoModal() { /* ... */ }
+        function openPdfModal(pdfUrl, skillName) { /* ... */ }
+        function closePdfModal() { /* ... */ }
+        function openProjectDetailModal(project) { /* ... */ }
+        function closeProjectDetailModal() { /* ... */ }
+
+        // BỔ SUNG: LOGIC CHO RATING & COMMENT
         async function displayRatingSummary() {
             const ratingRef = doc(db, "counters", "rating_summary");
             try {
@@ -282,6 +381,7 @@
             let commenterName = formData.get('name').trim() || 'Ẩn danh';
 
             if (!selectedRating) { alert('Vui lòng chọn số sao!'); return; }
+            if (!commentText) { alert('Vui lòng nhập bình luận!'); return; }
 
             const newScore = parseInt(selectedRating, 10);
             
@@ -297,6 +397,7 @@
                 const ratingRef = doc(db, "counters", "rating_summary");
                 await runTransaction(db, async (transaction) => {
                     const ratingDoc = await transaction.get(ratingRef);
+                    if (!ratingDoc.exists()) { throw "Document does not exist!"; }
                     const newTotalScore = (ratingDoc.data().total_score || 0) + newScore;
                     const newTotalRatings = (ratingDoc.data().total_ratings || 0) + 1;
                     transaction.update(ratingRef, { total_score: newTotalScore, total_ratings: newTotalRatings });
@@ -334,11 +435,13 @@
             let q;
             const commentsRef = collection(db, "comments");
 
+            const baseQuery = [where("approved", "==", true), orderBy("timestamp", "desc")];
+
             if (loadMore && lastVisibleComment) {
-                q = query(commentsRef, where("approved", "==", true), orderBy("timestamp", "desc"), startAfter(lastVisibleComment), limit(commentsPerPage));
+                q = query(commentsRef, ...baseQuery, startAfter(lastVisibleComment), limit(commentsPerPage));
             } else {
                 commentList.innerHTML = '<p class="text-gray-400 text-center">Đang tải bình luận...</p>';
-                q = query(commentsRef, where("approved", "==", true), orderBy("timestamp", "desc"), limit(commentsPerPage));
+                q = query(commentsRef, ...baseQuery, limit(commentsPerPage));
             }
 
             const querySnapshot = await getDocs(q);
@@ -368,39 +471,44 @@
             lastVisibleComment = docs[docs.length - 1];
             loadMoreBtn.classList.toggle('hidden', docs.length < commentsPerPage);
         }
+        
 
+        // --- EVENT LISTENERS ---
+        // Event Listeners có sẵn
+        portfolioGrid.addEventListener('click', (e) => { /* ... */ });
+        skillsContainer.addEventListener('click', (e) => { /* ... */ });
+        closeVideoModalButton.addEventListener('click', closeVideoModal);
+        videoModalOverlay.addEventListener('click', (e) => { if (e.target === videoModalOverlay) closeVideoModal(); });
+        closePdfModalButton.addEventListener('click', closePdfModal);
+        pdfModalOverlay.addEventListener('click', (e) => { if (e.target === pdfModalOverlay) closePdfModal(); });
+        closeProjectDetailModalButton.addEventListener('click', closeProjectDetailModal);
+        projectDetailModalOverlay.addEventListener('click', (e) => { if (e.target === projectDetailModalOverlay) closeProjectDetailModal(); });
+        
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        filterButtons.forEach(button => { /* ... */ });
+        
+        // BỔ SUNG: Event Listeners cho Rating & Comment
         openRatingModalBtn.addEventListener('click', openRatingModal);
         closeRatingModalBtn.addEventListener('click', closeRatingModal);
         ratingModalOverlay.addEventListener('click', (e) => e.target === ratingModalOverlay && closeRatingModal());
         loadMoreBtn.addEventListener('click', () => fetchComments(true));
 
-        // --- VISITOR COUNTER LOGIC ---
-        async function updateVisitorCount() {
-            const counterRef = doc(db, "counters", "visits");
-            try {
-                if (!sessionStorage.getItem('hasVisitedPortfolio')) {
-                    await updateDoc(counterRef, { count: increment(1) });
-                    sessionStorage.setItem('hasVisitedPortfolio', 'true');
-                }
-                const docSnap = await getDoc(counterRef);
-                const count = docSnap.exists() ? docSnap.data().count : 'N/A';
-                document.getElementById('visit-count').textContent = count.toLocaleString('vi-VN');
-                setTimeout(() => document.getElementById('visitor-counter').classList.add('show'), 500);
-            } catch (error) { console.error("Error updating visitor count:", error); }
-        }
 
-        // --- OTHER PAGE LOGIC (Projects, Modals, Nav, etc.) ---
-        // (This section should contain the rest of your JS logic for the page)
+        // --- LOGIC KHỞI TẠO ---
+        // Logic có sẵn
+        onSnapshot(projectsCollectionRef, (snapshot) => { const projects = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })); renderPortfolio(projects); }, (error) => { console.error("Error fetching projects:", error); });
+        lucide.createIcons();
+        // (Mobile menu and navbar scroll logic here...)
 
-        // --- INITIALIZATION ---
+        // BỔ SUNG: Khởi tạo tất cả chức năng khi trang được tải
         document.addEventListener('DOMContentLoaded', () => {
             updateVisitorCount();
             displayRatingSummary();
             checkIfVoted();
             fetchComments();
-            lucide.createIcons();
-            // Add other initial function calls here (e.g., for projects)
+            lucide.createIcons(); // Gọi lại để render icon trong các modal
         });
+
     </script>
 </body>
 </html>
