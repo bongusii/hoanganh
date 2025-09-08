@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Blog</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white p-8">
+    <div class="max-w-xl mx-auto">
+        <h1 class="text-3xl font-bold mb-6 text-center">Đăng bài viết mới</h1>
+        <form id="post-form" class="bg-gray-800 p-6 rounded-lg shadow-lg">
+            <div class="mb-4">
+                <label for="post-title" class="block text-gray-400 font-semibold mb-2">Tiêu đề</label>
+                <input type="text" id="post-title" class="w-full p-2 rounded bg-gray-700 text-white" required>
+            </div>
+            <div class="mb-4">
+                <label for="post-summary" class="block text-gray-400 font-semibold mb-2">Tóm tắt</label>
+                <textarea id="post-summary" rows="3" class="w-full p-2 rounded bg-gray-700 text-white" required></textarea>
+            </div>
+            <div class="mb-4">
+                <label for="post-content" class="block text-gray-400 font-semibold mb-2">Nội dung</label>
+                <textarea id="post-content" rows="10" class="w-full p-2 rounded bg-gray-700 text-white" required></textarea>
+            </div>
+            <button type="submit" class="w-full bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-4 rounded transition-colors duration-200">Đăng bài</button>
+        </form>
+        <p id="message" class="mt-4 text-center"></p>
+    </div>
+
+    <script type="module" src="firebase-config.js"></script>
+    <script type="module">
+        import { db } from './firebase-config.js';
+        import { collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        const postForm = document.getElementById('post-form');
+        const message = document.getElementById('message');
+
+        postForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const title = document.getElementById('post-title').value;
+            const summary = document.getElementById('post-summary').value;
+            const content = document.getElementById('post-content').value;
+
+            try {
+                await addDoc(collection(db, 'posts'), {
+                    title: title,
+                    summary: summary,
+                    content: content,
+                    createdAt: serverTimestamp()
+                });
+                message.textContent = 'Bài viết đã được đăng thành công!';
+                message.classList.add('text-green-500');
+                postForm.reset();
+            } catch (e) {
+                console.error("Lỗi khi thêm bài viết: ", e);
+                message.textContent = 'Đã xảy ra lỗi khi đăng bài viết.';
+                message.classList.add('text-red-500');
+            }
+        });
+    </script>
+</body>
+</html>
